@@ -1,23 +1,111 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView,
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+      meta: { requiresGuest: true },
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'),
+      meta: { requiresGuest: true },
+    },
+    {
+      path: '/',
+      redirect: '/dashboard',
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('../views/DashboardView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/products',
+      name: 'products',
+      component: () => import('../views/ProductsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/products/create',
+      name: 'product-create',
+      component: () => import('../views/ProductCreateView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/products/:id/edit',
+      name: 'product-edit',
+      component: () => import('../views/ProductEditView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/orders',
+      name: 'orders',
+      component: () => import('../views/OrdersView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/orders/:id',
+      name: 'order-detail',
+      component: () => import('../views/OrderDetailView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/categories',
+      name: 'categories',
+      component: () => import('../views/CategoriesView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/users',
+      name: 'users',
+      component: () => import('../views/UsersView.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: '/analytics',
+      name: 'analytics',
+      component: () => import('../views/AnalyticsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue'),
+      meta: { requiresAuth: true },
     },
   ],
+})
+
+// * Navigation guards
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+
+  // * Check if route requires authentication
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/login')
+    return
+  }
+
+  // * Check if route requires guest (not authenticated)
+  if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    next('/dashboard')
+    return
+  }
+
+  // * Check if route requires admin
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    next('/dashboard')
+    return
+  }
+
+  next()
 })
 
 export default router
