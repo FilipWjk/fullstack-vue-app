@@ -16,7 +16,7 @@ const userRoutes = require('./routes/users');
 const analyticsRoutes = require('./routes/analytics');
 
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
-const { authenticateToken } = require('./middleware/auth');
+const { authenticateToken } = require('./middleware/authentication');
 const { ErrorType } = require('./constants/errorMessages');
 
 const app = express();

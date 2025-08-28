@@ -3,6 +3,8 @@ const SuccessMessage = {
   // ? Authentication
   USER_REGISTERED: 'User registered successfully',
   LOGIN_SUCCESSFUL: 'Login successful',
+  LOGOUT_SUCCESSFUL: 'Logout successful',
+  TOKEN_REFRESHED: 'Token refreshed successfully',
 
   // ? Users
   USER_CREATED: 'User created successfully',
