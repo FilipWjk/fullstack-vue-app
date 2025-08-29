@@ -1,16 +1,14 @@
 <template>
-  <div class="space-y-6">
+  <div :class="getPageContainerClass()">
     <!-- Header -->
-    <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Profile Settings</h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-1">
-        Manage your account settings and preferences
-      </p>
+    <div :class="getPageHeaderClass()">
+      <h1 :class="getPageTitleClass()">Profile Settings</h1>
+      <p :class="getPageDescriptionClass()">Manage your account settings and preferences</p>
     </div>
 
     <!-- User Info Card -->
-    <div class="card space-y-6">
-      <div class="flex items-center space-x-4">
+    <div :class="getCardClass() + ' space-y-6'">
+      <div :class="getFlexItemsCenterClass()">
         <div class="flex-shrink-0">
           <div
             class="h-16 w-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold"
@@ -19,45 +17,42 @@
           </div>
         </div>
         <div>
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+          <h3 :class="getTextLargeClass()">
             {{ authStore.user?.name }}
           </h3>
-          <p class="text-gray-600 dark:text-gray-400">{{ authStore.user?.email }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-500 capitalize">
+          <p :class="getTextMutedClass()">{{ authStore.user?.email }}</p>
+          <p :class="getTextSmallMutedClass() + ' capitalize'">
             {{ authStore.user?.role?.toLowerCase() }} Account
           </p>
         </div>
       </div>
 
       <!-- Account Stats -->
-      <div
-        v-if="profileData"
-        class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700"
-      >
-        <div class="text-center">
-          <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+      <div v-if="profileData" :class="getStatsGridClass()">
+        <div :class="getTextCenterClass()">
+          <div :class="getStatNumberClass('blue')">
             {{ profileData.orders || 0 }}
           </div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Total Orders</div>
+          <div :class="getStatLabelClass()">Total Orders</div>
         </div>
-        <div class="text-center">
-          <div class="text-2xl font-bold text-green-600 dark:text-green-400">
+        <div :class="getTextCenterClass()">
+          <div :class="getStatNumberClass('green')">
             {{ formatDate(authStore.user?.createdAt) }}
           </div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Member Since</div>
+          <div :class="getStatLabelClass()">Member Since</div>
         </div>
-        <div class="text-center">
-          <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
+        <div :class="getTextCenterClass()">
+          <div :class="getStatNumberClass('purple')">
             {{ formatDate(authStore.user?.updatedAt) }}
           </div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Last Updated</div>
+          <div :class="getStatLabelClass()">Last Updated</div>
         </div>
       </div>
     </div>
 
     <!-- Profile Settings Form -->
-    <div class="card">
-      <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-6">Personal Information</h2>
+    <div :class="getCardClass()">
+      <h2 :class="getCardHeaderClass()">Personal Information</h2>
 
       <form @submit.prevent="handleProfileUpdate" class="space-y-6">
         <!-- Name Field -->
@@ -166,8 +161,8 @@
     </div>
 
     <!-- Password Change Form -->
-    <div class="card">
-      <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-6">Change Password</h2>
+    <div :class="getCardClass()">
+      <h2 :class="getCardHeaderClass()">Change Password</h2>
 
       <form @submit.prevent="handlePasswordChange" class="space-y-6">
         <!-- Current Password -->
@@ -336,6 +331,25 @@ const {
   getDisabledButtonClass,
   getLabelClass,
   getErrorMessageClass,
+  // Page layout classes
+  getPageContainerClass,
+  getPageHeaderClass,
+  getPageTitleClass,
+  getPageDescriptionClass,
+  // Card classes
+  getCardClass,
+  getCardHeaderClass,
+  // Text utility classes
+  getTextLargeClass,
+  getTextMutedClass,
+  getTextSmallMutedClass,
+  getTextCenterClass,
+  // Layout utility classes
+  getStatsGridClass,
+  getFlexItemsCenterClass,
+  // Stat classes
+  getStatNumberClass,
+  getStatLabelClass,
 } = useUIClasses()
 
 // * State

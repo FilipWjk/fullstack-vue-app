@@ -1,14 +1,8 @@
 <template>
-  <div
-    class="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-200"
-  >
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <h2
-        class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent dark:bg-gradient-to-r dark:from-blue-400 dark:via-purple-400 dark:to-indigo-400 dark:bg-clip-text dark:text-transparent"
-      >
-        Sign in to your account
-      </h2>
-      <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+  <div :class="getAuthPageContainerClass()">
+    <div :class="getAuthHeaderContainerClass()">
+      <h2 :class="getAuthTitleClass()">Sign in to your account</h2>
+      <p :class="getAuthSubtitleClass()">
         Or
         <router-link
           to="/register"
@@ -19,10 +13,8 @@
       </p>
     </div>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-      <div
-        class="bg-white dark:bg-gray-800 px-6 py-12 shadow-xl sm:rounded-2xl sm:px-12 border border dark:border-gray-700 transition-colors duration-200 relative overflow-hidden"
-      >
+    <div :class="getAuthFormContainerClass()">
+      <div :class="getFormCardClass()">
         <form class="space-y-6 relative z-10" @submit.prevent="handleLogin">
           <div>
             <label for="email" :class="getLabelClass()"> Email address </label>
@@ -148,7 +140,18 @@ import { createValidationService, ValidationRules } from '../utils/validationSer
 const router = useRouter()
 const toast = useToast()
 const authStore = useAuthStore()
-const { getPrimaryButtonClass, getInputClass, getLabelClass, getErrorMessageClass } = useUIClasses()
+const {
+  getPrimaryButtonClass,
+  getInputClass,
+  getLabelClass,
+  getErrorMessageClass,
+  getAuthPageContainerClass,
+  getAuthHeaderContainerClass,
+  getAuthTitleClass,
+  getAuthSubtitleClass,
+  getAuthFormContainerClass,
+  getFormCardClass,
+} = useUIClasses()
 
 // * Create validation service
 const validation = createValidationService(

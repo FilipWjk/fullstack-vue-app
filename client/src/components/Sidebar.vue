@@ -3,10 +3,7 @@
     <!-- Mobile sidebar overlay -->
     <div v-if="sidebarOpen" class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
       <!-- Backdrop -->
-      <div
-        class="fixed inset-0 bg-gray-900/80 transition-opacity duration-300"
-        @click="$emit('close')"
-      ></div>
+      <div :class="getSidebarOverlayClass()" @click="$emit('close')"></div>
 
       <div class="fixed inset-0 flex">
         <!-- Mobile sidebar -->
@@ -15,14 +12,10 @@
         >
           <!-- Close button -->
           <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
-            <button
-              type="button"
-              class="-m-2.5 p-2.5 text-white hover:text-gray-300 transition-colors duration-200"
-              @click="$emit('close')"
-            >
-              <span class="sr-only">Close sidebar</span>
+            <button type="button" :class="getSidebarCloseButtonClass()" @click="$emit('close')">
+              <span :class="getScreenReaderClass()">Close sidebar</span>
               <svg
-                class="h-6 w-6"
+                :class="getIconClass('large', 'white')"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
@@ -37,10 +30,12 @@
           <div :class="getSidebarClass()">
             <!-- Logo/Brand Section -->
             <div class="flex h-16 shrink-0 items-center space-x-3">
-              <div
-                class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center"
-              >
-                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <div :class="getSidebarBrandClass()">
+                <svg
+                  :class="getIconClass('standard', 'white')"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path
                     fill-rule="evenodd"
                     d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -49,7 +44,7 @@
                 </svg>
               </div>
               <div>
-                <h1 class="text-xl font-bold text-gray-900 dark:text-white">E-Commerce Panel</h1>
+                <h1 :class="getSidebarTitleClass()">E-Commerce Panel</h1>
               </div>
             </div>
 
@@ -77,11 +72,7 @@
 
                 <!-- Admin only section -->
                 <li v-if="authStore.isAdmin">
-                  <div
-                    class="text-xs font-semibold leading-6 text-gray-400 dark:text-gray-500 uppercase tracking-wider"
-                  >
-                    Administration
-                  </div>
+                  <div :class="getSidebarSectionTitleClass()">Admin Settings</div>
                   <ul role="list" class="-mx-2 mt-2 space-y-1">
                     <li v-for="item in adminNavigation" :key="item.name">
                       <router-link
@@ -131,10 +122,8 @@
       <div :class="getSidebarClass()">
         <!-- Logo/Brand Section -->
         <div class="flex h-16 shrink-0 items-center space-x-3">
-          <div
-            class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center"
-          >
-            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <div :class="getSidebarBrandClass()">
+            <svg :class="getIconClass('standard', 'white')" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fill-rule="evenodd"
                 d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -143,7 +132,7 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-bold text-gray-900 dark:text-white">E-Commerce Panel</h1>
+            <h1 :class="getSidebarTitleClass()">E-Commerce Panel</h1>
           </div>
         </div>
 
@@ -208,7 +197,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { useUIClasses } from '../composables/useUIClasses'
@@ -224,47 +214,87 @@ import {
   ArrowRightOnRectangleIcon,
 } from '@heroicons/vue/24/outline'
 
-defineOptions({
+export default defineComponent({
   name: 'AppSidebar',
+  components: {
+    ChartBarIcon,
+    HomeIcon,
+    ShoppingBagIcon,
+    ClipboardDocumentListIcon,
+    TagIcon,
+    UsersIcon,
+    ChartPieIcon,
+    UserIcon,
+    ArrowRightOnRectangleIcon,
+  },
+  props: {
+    sidebarOpen: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  emits: ['close'],
+  setup() {
+    const authStore = useAuthStore()
+    const router = useRouter()
+    const {
+      getNavLinkClass,
+      getNavIconClass,
+      getSidebarClass,
+      getSecondaryButtonClass,
+      getSidebarOverlayClass,
+      getSidebarCloseButtonClass,
+      getSidebarBrandClass,
+      getSidebarTitleClass,
+      getSidebarSectionTitleClass,
+      getIconClass,
+      getScreenReaderClass,
+    } = useUIClasses()
+
+    const navigation = [
+      { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+      { name: 'Products', href: '/products', icon: ShoppingBagIcon },
+      { name: 'Orders', href: '/orders', icon: ClipboardDocumentListIcon },
+      { name: 'Categories', href: '/categories', icon: TagIcon },
+      { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
+    ]
+
+    const adminNavigation = [
+      { name: 'Users', href: '/users', icon: UsersIcon },
+      { name: 'Reports', href: '/analytics', icon: ChartPieIcon },
+    ]
+
+    const isActiveRoute = (href: string) => {
+      return (
+        router.currentRoute.value.path === href ||
+        (router.currentRoute.value.path.startsWith(href) && href !== '/dashboard')
+      )
+    }
+
+    const handleLogout = async () => {
+      await authStore.logout()
+      router.push('/login')
+    }
+
+    return {
+      authStore,
+      router,
+      getNavLinkClass,
+      getNavIconClass,
+      getSidebarClass,
+      getSecondaryButtonClass,
+      getSidebarOverlayClass,
+      getSidebarCloseButtonClass,
+      getSidebarBrandClass,
+      getSidebarTitleClass,
+      getSidebarSectionTitleClass,
+      getIconClass,
+      getScreenReaderClass,
+      navigation,
+      adminNavigation,
+      isActiveRoute,
+      handleLogout,
+    }
+  },
 })
-
-interface Props {
-  sidebarOpen: boolean
-}
-
-defineProps<Props>()
-
-defineEmits<{
-  close: []
-}>()
-
-const authStore = useAuthStore()
-const router = useRouter()
-const { getNavLinkClass, getNavIconClass, getSidebarClass, getSecondaryButtonClass } =
-  useUIClasses()
-
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Products', href: '/products', icon: ShoppingBagIcon },
-  { name: 'Orders', href: '/orders', icon: ClipboardDocumentListIcon },
-  { name: 'Categories', href: '/categories', icon: TagIcon },
-  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
-]
-
-const adminNavigation = [
-  { name: 'Users', href: '/users', icon: UsersIcon },
-  { name: 'Reports', href: '/analytics', icon: ChartPieIcon },
-]
-
-const isActiveRoute = (href: string) => {
-  return (
-    router.currentRoute.value.path === href ||
-    (router.currentRoute.value.path.startsWith(href) && href !== '/dashboard')
-  )
-}
-
-const handleLogout = async () => {
-  await authStore.logout()
-  router.push('/login')
-}
 </script>
