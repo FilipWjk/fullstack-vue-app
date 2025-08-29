@@ -43,16 +43,16 @@
                 type="text"
                 autocomplete="name"
                 required
-                v-model="form.name"
-                @blur="onFieldBlur('name')"
-                @input="onFieldInput('name')"
+                v-model="validation.form.name"
+                @blur="validation.onFieldBlur('name')"
+                @input="validation.onFieldInput('name')"
                 :disabled="authStore.isLoading"
-                :class="getInputClass(!!validationErrors.name)"
+                :class="getInputClass(!!validation.fieldErrors.name)"
                 placeholder="Enter your full name"
               />
             </div>
-            <div v-if="validationErrors.name" :class="getErrorMessageClass()">
-              {{ validationErrors.name }}
+            <div v-if="validation.fieldErrors.name" :class="getErrorMessageClass()">
+              {{ validation.fieldErrors.name }}
             </div>
           </div>
 
@@ -65,16 +65,16 @@
                 type="email"
                 autocomplete="email"
                 required
-                v-model="form.email"
-                @blur="onFieldBlur('email')"
-                @input="onFieldInput('email')"
+                v-model="validation.form.email"
+                @blur="validation.onFieldBlur('email')"
+                @input="validation.onFieldInput('email')"
                 :disabled="authStore.isLoading"
-                :class="getInputClass(!!validationErrors.email)"
+                :class="getInputClass(!!validation.fieldErrors.email)"
                 placeholder="Enter your email"
               />
             </div>
-            <div v-if="validationErrors.email" :class="getErrorMessageClass()">
-              {{ validationErrors.email }}
+            <div v-if="validation.fieldErrors.email" :class="getErrorMessageClass()">
+              {{ validation.fieldErrors.email }}
             </div>
           </div>
 
@@ -87,16 +87,16 @@
                 type="password"
                 autocomplete="new-password"
                 required
-                v-model="form.password"
-                @blur="onFieldBlur('password')"
-                @input="onFieldInput('password')"
+                v-model="validation.form.password"
+                @blur="validation.onFieldBlur('password')"
+                @input="validation.onFieldInput('password')"
                 :disabled="authStore.isLoading"
-                :class="getInputClass(!!validationErrors.password)"
+                :class="getInputClass(!!validation.fieldErrors.password)"
                 placeholder="Create a strong password"
               />
             </div>
-            <div v-if="validationErrors.password" :class="getErrorMessageClass()">
-              {{ validationErrors.password }}
+            <div v-if="validation.fieldErrors.password" :class="getErrorMessageClass()">
+              {{ validation.fieldErrors.password }}
             </div>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Must be at least 6 characters long
@@ -112,16 +112,16 @@
                 type="password"
                 autocomplete="new-password"
                 required
-                v-model="form.confirmPassword"
-                @blur="onFieldBlur('confirmPassword')"
-                @input="onFieldInput('confirmPassword')"
+                v-model="validation.form.confirmPassword"
+                @blur="validation.onFieldBlur('confirmPassword')"
+                @input="validation.onFieldInput('confirmPassword')"
                 :disabled="authStore.isLoading"
-                :class="getInputClass(!!validationErrors.confirmPassword)"
+                :class="getInputClass(!!validation.fieldErrors.confirmPassword)"
                 placeholder="Confirm your password"
               />
             </div>
-            <div v-if="validationErrors.confirmPassword" :class="getErrorMessageClass()">
-              {{ validationErrors.confirmPassword }}
+            <div v-if="validation.fieldErrors.confirmPassword" :class="getErrorMessageClass()">
+              {{ validation.fieldErrors.confirmPassword }}
             </div>
           </div>
 
@@ -132,7 +132,10 @@
           </div>
 
           <!-- Form validation message -->
-          <div v-if="!isFormValid && formValidationMessage" :class="getWarningMessageClass()">
+          <div
+            v-if="!validation.isFormValid.value && validation.formValidationMessage.value"
+            :class="getWarningMessageClass()"
+          >
             <div :class="getWarningTextClass()">
               <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -141,16 +144,16 @@
                   clip-rule="evenodd"
                 />
               </svg>
-              {{ formValidationMessage }}
+              {{ validation.formValidationMessage.value }}
             </div>
           </div>
 
           <div>
             <button
               type="submit"
-              :disabled="authStore.isLoading || !isFormValid"
+              :disabled="authStore.isLoading || !validation.isFormValid.value"
               :class="
-                authStore.isLoading || !isFormValid
+                authStore.isLoading || !validation.isFormValid.value
                   ? getDisabledButtonClass()
                   : getPrimaryButtonClass()
               "
@@ -168,11 +171,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import { useAuthStore } from '../stores/auth'
 import { useUIClasses } from '../composables/useUIClasses'
+import { createValidationService, ValidationRules } from '../utils/validationService'
 import { AxiosError } from 'axios'
 
 const router = useRouter()
@@ -188,132 +192,37 @@ const {
   getWarningTextClass,
 } = useUIClasses()
 
-const form = reactive({
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-})
-
-const validationErrors = reactive({
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-})
-
-const fieldTouched = reactive({
-  name: false,
-  email: false,
-  password: false,
-  confirmPassword: false,
-})
+// * Create validation service
+const validation = createValidationService(
+  {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  },
+  {
+    name: {
+      required: true,
+      rules: [ValidationRules.minNameLength],
+    },
+    email: {
+      required: true,
+      rules: [ValidationRules.email],
+    },
+    password: {
+      required: true,
+      rules: [ValidationRules.passwordStrength],
+    },
+    confirmPassword: {
+      required: true,
+      rules: [ValidationRules.passwordMatch('confirmPassword', 'password')],
+    },
+  },
+)
 
 // * Clear any existing auth errors when component mounts
 onMounted(() => {
   authStore.error = null
-})
-
-// * Validation rules - single source of truth
-const validationRules = {
-  name: (value: string) => {
-    if (!value.trim()) return 'Name is required'
-    if (value.trim().length < 2) return 'Name must be at least 2 characters'
-    return ''
-  },
-  email: (value: string) => {
-    if (!value.trim()) return 'Email is required'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Please enter a valid email address'
-    return ''
-  },
-  password: (value: string) => {
-    if (!value) return 'Password is required'
-    if (value.length < 6) return 'Password must be at least 6 characters'
-    return ''
-  },
-  confirmPassword: (value: string, passwordValue: string) => {
-    if (!value) return 'Please confirm your password'
-    if (passwordValue !== value) return 'Passwords do not match'
-    return ''
-  },
-}
-
-const validateField = (fieldName: keyof typeof validationErrors) => {
-  if (!fieldTouched[fieldName]) return
-
-  switch (fieldName) {
-    case 'name':
-      validationErrors.name = validationRules.name(form.name)
-      break
-    case 'email':
-      validationErrors.email = validationRules.email(form.email)
-      break
-    case 'password':
-      validationErrors.password = validationRules.password(form.password)
-      if (fieldTouched.confirmPassword) {
-        validateField('confirmPassword')
-      }
-      break
-    case 'confirmPassword':
-      validationErrors.confirmPassword = validationRules.confirmPassword(
-        form.confirmPassword,
-        form.password,
-      )
-      break
-  }
-}
-
-// * Mark field as touched and validate
-const onFieldBlur = (fieldName: keyof typeof validationErrors) => {
-  fieldTouched[fieldName] = true
-  validateField(fieldName)
-}
-
-// * Validate on input for touched fields
-const onFieldInput = (fieldName: keyof typeof validationErrors) => {
-  if (fieldTouched[fieldName]) {
-    validateField(fieldName)
-  }
-}
-
-const isFormValid = computed(() => {
-  return (
-    !validationRules.name(form.name) &&
-    !validationRules.email(form.email) &&
-    !validationRules.password(form.password) &&
-    !validationRules.confirmPassword(form.confirmPassword, form.password) &&
-    !validationErrors.name &&
-    !validationErrors.email &&
-    !validationErrors.password &&
-    !validationErrors.confirmPassword
-  )
-})
-
-const formValidationMessage = computed(() => {
-  // Check validation rules first (for untouched fields)
-  const nameError = validationRules.name(form.name)
-  if (nameError) return nameError
-
-  const emailError = validationRules.email(form.email)
-  if (emailError) return emailError
-
-  const passwordError = validationRules.password(form.password)
-  if (passwordError) return passwordError
-
-  const confirmPasswordError = validationRules.confirmPassword(form.confirmPassword, form.password)
-  if (confirmPasswordError) return confirmPasswordError
-
-  // * Check for field-specific validation errors (for touched fields)
-  if (
-    validationErrors.name ||
-    validationErrors.email ||
-    validationErrors.password ||
-    validationErrors.confirmPassword
-  ) {
-    return 'Please fix the errors above'
-  }
-
-  return ''
 })
 
 interface ErrorResponse {
@@ -323,22 +232,16 @@ interface ErrorResponse {
 }
 
 const handleRegister = async () => {
-  // * Mark all fields as touched to show any remaining errors
-  Object.keys(fieldTouched).forEach((field) => {
-    fieldTouched[field as keyof typeof fieldTouched] = true
-    validateField(field as keyof typeof validationErrors)
-  })
-
-  if (!isFormValid.value) {
+  if (!validation.validateForm()) {
     toast.error('Please fix the form errors before submitting')
     return
   }
 
   try {
     await authStore.register({
-      name: form.name.trim(),
-      email: form.email.trim(),
-      password: form.password,
+      name: String(validation.form.name).trim(),
+      email: String(validation.form.email).trim(),
+      password: String(validation.form.password),
     })
 
     toast.success('Account created successfully!')
@@ -347,11 +250,7 @@ const handleRegister = async () => {
     if (error instanceof AxiosError) {
       const errorData = error.response?.data as ErrorResponse
       if (errorData?.errors && Array.isArray(errorData.errors)) {
-        errorData.errors.forEach((err) => {
-          if (err.field in validationErrors) {
-            validationErrors[err.field as keyof typeof validationErrors] = err.message
-          }
-        })
+        validation.handleApiErrors(errorData.errors)
         toast.error('Please check the form for errors')
       } else {
         const message = errorData?.message || 'Registration failed'

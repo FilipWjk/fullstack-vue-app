@@ -33,10 +33,15 @@
                 type="email"
                 autocomplete="email"
                 required
-                v-model="form.email"
+                v-model="validation.form.email"
+                @blur="validation.onFieldBlur('email')"
+                @input="validation.onFieldInput('email')"
                 :disabled="authStore.isLoading"
-                :class="getInputClass()"
+                :class="getInputClass(!!validation.fieldErrors.email)"
               />
+            </div>
+            <div v-if="validation.fieldErrors.email" :class="getErrorMessageClass()">
+              {{ validation.fieldErrors.email }}
             </div>
           </div>
 
@@ -49,10 +54,15 @@
                 type="password"
                 autocomplete="current-password"
                 required
-                v-model="form.password"
+                v-model="validation.form.password"
+                @blur="validation.onFieldBlur('password')"
+                @input="validation.onFieldInput('password')"
                 :disabled="authStore.isLoading"
-                :class="getInputClass()"
+                :class="getInputClass(!!validation.fieldErrors.password)"
               />
+            </div>
+            <div v-if="validation.fieldErrors.password" :class="getErrorMessageClass()">
+              {{ validation.fieldErrors.password }}
             </div>
           </div>
 
@@ -63,7 +73,15 @@
           </div>
 
           <div>
-            <button type="submit" :disabled="authStore.isLoading" :class="getPrimaryButtonClass()">
+            <button
+              type="submit"
+              :disabled="authStore.isLoading || !validation.isFormValid.value"
+              :class="
+                authStore.isLoading || !validation.isFormValid.value
+                  ? 'opacity-50 cursor-not-allowed ' + getPrimaryButtonClass()
+                  : getPrimaryButtonClass()
+              "
+            >
               <span v-if="authStore.isLoading" class="mr-2">
                 <div class="spinner"></div>
               </span>
@@ -120,21 +138,29 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import { useAuthStore } from '../stores/auth'
 import { useUIClasses } from '../composables/useUIClasses'
+import { createValidationService, ValidationRules } from '../utils/validationService'
 
 const router = useRouter()
 const toast = useToast()
 const authStore = useAuthStore()
-const { getPrimaryButtonClass, getInputClass, getLabelClass } = useUIClasses()
+const { getPrimaryButtonClass, getInputClass, getLabelClass, getErrorMessageClass } = useUIClasses()
 
-const form = reactive({
-  email: '',
-  password: '',
-})
+// * Create validation service
+const validation = createValidationService(
+  {
+    email: '',
+    password: '',
+  },
+  {
+    email: { required: true, rules: [ValidationRules.email] },
+    password: { required: true, rules: [ValidationRules.minLength(6)] },
+  },
+)
 
 // * Clear any existing auth errors when component mounts
 onMounted(() => {
@@ -149,8 +175,15 @@ interface ErrorResponse {
 }
 
 const handleLogin = async () => {
+  if (!validation.validateForm()) {
+    return
+  }
+
   try {
-    await authStore.login(form)
+    await authStore.login({
+      email: String(validation.form.email),
+      password: String(validation.form.password),
+    })
     toast.success('Login successful!')
     await router.push('/dashboard')
   } catch (error: unknown) {
@@ -168,8 +201,8 @@ const quickLogin = async (role: string) => {
 
   const creds = credentials[role as keyof typeof credentials]
   if (creds) {
-    form.email = creds.email
-    form.password = creds.password
+    validation.form.email = creds.email
+    validation.form.password = creds.password
     try {
       await authStore.login(creds)
       window.location.href = '/dashboard'
