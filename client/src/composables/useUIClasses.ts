@@ -82,6 +82,78 @@ export const useUIClasses = () => {
     ].join(' ')
   }
 
+  // * Sidebar navigation classes
+  const getNavLinkClass = (isActive = false) => {
+    const baseClasses = [
+      'group flex gap-x-3 rounded-lg p-3 text-sm leading-6 font-semibold',
+      'transition-all duration-200',
+    ]
+
+    if (isActive) {
+      baseClasses.push(
+        'bg-primary-50 dark:bg-gray-700',
+        'text-primary-600 dark:text-primary-400',
+        'shadow-sm',
+      )
+    } else {
+      baseClasses.push(
+        'text-gray-700 dark:text-gray-300',
+        'hover:text-primary-600 dark:hover:text-primary-400',
+        'hover:bg-primary-50 dark:hover:bg-gray-700',
+      )
+    }
+
+    return baseClasses.join(' ')
+  }
+
+  const getNavIconClass = (isActive = false) => {
+    const baseClasses = ['h-5 w-5 shrink-0', 'transition-colors duration-200']
+
+    if (isActive) {
+      baseClasses.push('text-primary-600 dark:text-primary-400')
+    } else {
+      baseClasses.push(
+        'text-gray-400 dark:text-gray-500',
+        'group-hover:text-primary-600 dark:group-hover:text-primary-400',
+      )
+    }
+
+    return baseClasses.join(' ')
+  }
+
+  // * Sidebar container classes
+  const getSidebarClass = () => {
+    return [
+      'sidebar flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4',
+      'bg-white dark:bg-gray-900',
+      'border-r border-gray-200 dark:border-gray-700',
+    ].join(' ')
+  }
+
+  // * Secondary button class (for logout, etc.)
+  const getSecondaryButtonClass = (variant = 'default') => {
+    const baseClasses = [
+      'w-full flex items-center px-3 py-2 text-sm',
+      'rounded-lg transition-all duration-200',
+    ]
+
+    if (variant === 'danger') {
+      baseClasses.push(
+        'text-gray-600 dark:text-gray-300',
+        'hover:text-red-600 dark:hover:text-red-400',
+        'hover:bg-red-50 dark:hover:bg-red-900/20',
+      )
+    } else {
+      baseClasses.push(
+        'text-gray-600 dark:text-gray-300',
+        'hover:text-primary-600 dark:hover:text-primary-400',
+        'hover:bg-primary-50 dark:hover:bg-gray-700',
+      )
+    }
+
+    return baseClasses.join(' ')
+  }
+
   return {
     getInputClass,
     getPrimaryButtonClass,
@@ -91,5 +163,9 @@ export const useUIClasses = () => {
     getWarningMessageClass,
     getWarningTextClass,
     getFormCardClass,
+    getNavLinkClass,
+    getNavIconClass,
+    getSidebarClass,
+    getSecondaryButtonClass,
   }
 }
