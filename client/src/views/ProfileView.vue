@@ -306,21 +306,9 @@ import { useAuthStore } from '../stores/auth'
 import { useUIClasses } from '../composables/useUIClasses'
 import { useToast } from 'vue-toastification'
 import { createValidationService, ValidationRules } from '../utils/validationService'
-import axios, { AxiosError } from 'axios'
-
-interface ApiErrorResponse {
-  message: string
-  error?: string
-  errors?: Array<{
-    field: string
-    message: string
-    value?: unknown
-  }>
-}
-
-const isAxiosError = (error: unknown): error is AxiosError<ApiErrorResponse> => {
-  return (error as AxiosError).isAxiosError === true
-}
+import axios from 'axios'
+import { handleApiError, getValidationErrors } from '../utils/errorService'
+import { ErrorMessages } from '../utils/errorMessages'
 
 // Store & composables
 const authStore = useAuthStore()
@@ -422,8 +410,9 @@ const loadProfileData = async () => {
     profileData.value = {
       orders: response.data.data._count?.orders || 0,
     }
-  } catch (error) {
-    console.error('Failed to load profile data:', error)
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error, 'PROFILE_LOAD_FAILED')
+    console.error(errorMessage, error)
   }
 }
 
@@ -440,7 +429,7 @@ const toggleDarkMode = () => {
 
 const handleProfileUpdate = async () => {
   if (!profileValidation.validateForm()) {
-    toast.error('Please fix the form errors before submitting')
+    toast.error(ErrorMessages.FORM_VALIDATION_FAILED)
     return
   }
 
@@ -461,7 +450,7 @@ const handleProfileUpdate = async () => {
     }
 
     authStore.applyDarkMode()
-    toast.success('Profile updated successfully')
+    toast.success(ErrorMessages.PROFILE_UPDATE_SUCCESS)
   } catch (error: unknown) {
     // * Revert dark mode preview to original state on error
     if (authStore.user) {
@@ -469,16 +458,13 @@ const handleProfileUpdate = async () => {
       authStore.applyDarkMode()
     }
 
-    if (isAxiosError(error)) {
-      const message = error.response?.data?.message || 'Failed to update profile'
-      toast.error(message)
+    const errorMessage = handleApiError(error, 'PROFILE_UPDATE_FAILED')
+    toast.error(errorMessage)
 
-      // * Handle validation errors from API
-      if (error.response?.data?.errors) {
-        profileValidation.handleApiErrors(error.response.data.errors)
-      }
-    } else {
-      toast.error('Failed to update profile')
+    // * Handle validation errors from API
+    const validationErrors = getValidationErrors(error)
+    if (validationErrors.length > 0) {
+      profileValidation.handleApiErrors(validationErrors)
     }
   } finally {
     isLoading.value = false
@@ -487,7 +473,7 @@ const handleProfileUpdate = async () => {
 
 const handlePasswordChange = async () => {
   if (!passwordValidation.validateForm()) {
-    toast.error('Please fix the form errors before submitting')
+    toast.error(ErrorMessages.FORM_VALIDATION_FAILED)
     return
   }
 
@@ -505,17 +491,15 @@ const handlePasswordChange = async () => {
     passwordValidation.form.confirmPassword = ''
     passwordValidation.clearErrors()
 
-    toast.success('Password changed successfully')
+    toast.success(ErrorMessages.PASSWORD_CHANGE_SUCCESS)
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      const message = error.response?.data?.message || 'Failed to change password'
-      toast.error(message)
+    const errorMessage = handleApiError(error, 'PASSWORD_CHANGE_FAILED')
+    toast.error(errorMessage)
 
-      if (error.response?.data?.errors) {
-        passwordValidation.handleApiErrors(error.response.data.errors)
-      }
-    } else {
-      toast.error('Failed to change password')
+    // * Handle validation errors from API
+    const validationErrors = getValidationErrors(error)
+    if (validationErrors.length > 0) {
+      passwordValidation.handleApiErrors(validationErrors)
     }
   } finally {
     isPasswordLoading.value = false

@@ -21,6 +21,37 @@ function colorize(message, status) {
 }
 
 /**
+ * Colorize HTTP status codes for Morgan logging
+ * @param {number} status - The HTTP status code
+ * @returns {string} The colorized status code
+ */
+function colorizeStatus(status) {
+  const statusString = String(status);
+
+  if (status >= 500) return statusString.red.inverse;
+  if (status === 404) return statusString.blue;
+  if (status >= 400) return statusString.yellow;
+  if (status >= 300) return statusString.cyan;
+  return statusString.green;
+}
+
+/**
+ * Colorize HTTP methods for Morgan logging
+ * @param {string} method - The HTTP method
+ * @returns {string} The colorized method
+ */
+function colorizeMethod(method) {
+  const colors = {
+    GET: method.green,
+    POST: method.blue,
+    PUT: method.yellow,
+    PATCH: method.magenta,
+    DELETE: method.red,
+  };
+  return colors[method] || method;
+}
+
+/**
  * Create a standardized error response object
  * @param {string} errorType - The error type from ErrorType enum
  * @param {string} [customMessage] - Optional custom message to override the default
@@ -102,4 +133,6 @@ module.exports = {
   createValidationError,
   isError,
   logError,
+  colorizeStatus,
+  colorizeMethod,
 };

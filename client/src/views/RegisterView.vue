@@ -169,7 +169,8 @@ import { useToast } from 'vue-toastification'
 import { useAuthStore } from '../stores/auth'
 import { useUIClasses } from '../composables/useUIClasses'
 import { createValidationService, ValidationRules } from '../utils/validationService'
-import { AxiosError } from 'axios'
+import { handleApiError, getValidationErrors } from '../utils/errorService'
+import { ErrorMessages } from '../utils/errorMessages'
 
 const router = useRouter()
 const toast = useToast()
@@ -223,15 +224,9 @@ onMounted(() => {
   authStore.error = null
 })
 
-interface ErrorResponse {
-  message?: string
-  error?: string
-  errors?: Array<{ field: string; message: string }>
-}
-
 const handleRegister = async () => {
   if (!validation.validateForm()) {
-    toast.error('Please fix the form errors before submitting')
+    toast.error(ErrorMessages.FORM_VALIDATION_FAILED)
     return
   }
 
@@ -242,20 +237,17 @@ const handleRegister = async () => {
       password: String(validation.form.password),
     })
 
-    toast.success('Account created successfully!')
+    toast.success(ErrorMessages.REGISTRATION_SUCCESS)
     await router.push('/dashboard')
   } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      const errorData = error.response?.data as ErrorResponse
-      if (errorData?.errors && Array.isArray(errorData.errors)) {
-        validation.handleApiErrors(errorData.errors)
-        toast.error('Please check the form for errors')
-      } else {
-        const message = errorData?.message || 'Registration failed'
-        toast.error(message)
-      }
+    const errorMessage = handleApiError(error, 'REGISTRATION_FAILED')
+    const validationErrors = getValidationErrors(error)
+
+    if (validationErrors.length > 0) {
+      validation.handleApiErrors(validationErrors)
+      toast.error(ErrorMessages.FORM_VALIDATION_CHECK_ERRORS)
     } else {
-      toast.error('Registration failed')
+      toast.error(errorMessage)
     }
   }
 }

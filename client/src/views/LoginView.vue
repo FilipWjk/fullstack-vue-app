@@ -136,6 +136,7 @@ import { useToast } from 'vue-toastification'
 import { useAuthStore } from '../stores/auth'
 import { useUIClasses } from '../composables/useUIClasses'
 import { createValidationService, ValidationRules } from '../utils/validationService'
+import { ErrorMessages } from '../utils/errorMessages'
 
 const router = useRouter()
 const toast = useToast()
@@ -170,12 +171,7 @@ onMounted(() => {
   authStore.error = null
 })
 
-import { AxiosError } from 'axios'
-
-interface ErrorResponse {
-  message?: string
-  error?: string
-}
+import { handleApiError } from '../utils/errorService'
 
 const handleLogin = async () => {
   if (!validation.validateForm()) {
@@ -187,12 +183,11 @@ const handleLogin = async () => {
       email: String(validation.form.email),
       password: String(validation.form.password),
     })
-    toast.success('Login successful!')
+    toast.success(ErrorMessages.LOGIN_SUCCESS)
     await router.push('/dashboard')
   } catch (error: unknown) {
-    const message =
-      ((error as AxiosError)?.response?.data as ErrorResponse)?.message || 'Login failed'
-    toast.error(message)
+    const errorMessage = handleApiError(error, 'LOGIN_FAILED')
+    toast.error(errorMessage)
   }
 }
 
@@ -210,9 +205,8 @@ const quickLogin = async (role: string) => {
       await authStore.login(creds)
       window.location.href = '/dashboard'
     } catch (error: unknown) {
-      const message =
-        ((error as AxiosError)?.response?.data as ErrorResponse)?.message || 'Login failed'
-      toast.error(message)
+      const errorMessage = handleApiError(error, 'LOGIN_FAILED')
+      toast.error(errorMessage)
     }
   }
 }

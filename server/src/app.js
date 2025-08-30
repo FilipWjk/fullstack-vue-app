@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+require('colors');
 require('dotenv').config();
 
 // * Routes
@@ -17,6 +18,7 @@ const analyticsRoutes = require('./routes/analytics');
 
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const { authenticateToken } = require('./middleware/authentication');
+const { colorizeStatus, colorizeMethod } = require('./utils/errorUtils');
 const { ErrorType } = require('./constants/errorMessages');
 
 const app = express();
@@ -47,8 +49,12 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// * Logging
-app.use(morgan('combined'));
+// * Logging with colored output
+morgan.token('colorstatus', (req, res) => colorizeStatus(res.statusCode));
+morgan.token('colormethod', (req, res) => colorizeMethod(req.method));
+
+const customFormat = ':colormethod :url :colorstatus :response-time ms - :res[content-length]';
+app.use(morgan(customFormat));
 
 // * Static file serving for uploads
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

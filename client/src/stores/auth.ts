@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import axios, { AxiosError } from 'axios'
-import { UserRole, type UserRoleType } from '@/constants/enums'
+import axios from 'axios'
+import { UserRole, type UserRoleType } from '@/utils/enums'
+import { handleApiError } from '@/utils/errorService'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
@@ -74,10 +75,6 @@ export interface ApiErrorResponse {
   }>
 }
 
-const isAxiosError = (error: unknown): error is AxiosError<ApiErrorResponse> => {
-  return (error as AxiosError).isAxiosError === true
-}
-
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
@@ -129,9 +126,7 @@ export const useAuthStore = defineStore('auth', {
 
         return response.data
       } catch (error: unknown) {
-        this.error = isAxiosError(error)
-          ? error.response?.data?.message || 'Login failed'
-          : 'Login failed'
+        this.error = handleApiError(error, 'LOGIN_FAILED')
         throw error
       } finally {
         this.isLoading = false
@@ -151,9 +146,7 @@ export const useAuthStore = defineStore('auth', {
 
         return response.data
       } catch (error: unknown) {
-        this.error = isAxiosError(error)
-          ? error.response?.data?.message || 'Registration failed'
-          : 'Registration failed'
+        this.error = handleApiError(error, 'REGISTRATION_FAILED')
         throw error
       } finally {
         this.isLoading = false

@@ -26,7 +26,12 @@ router.get(
     query('page').optional().isInt({ min: 1 }),
     query('limit').optional().isInt({ min: 1, max: 100 }),
     query('search').optional().trim(),
-    query('role').optional().isIn(USER_ROLES),
+    query('role')
+      .optional()
+      .custom((value) => {
+        if (value === '' || value === undefined || value === null) return true;
+        return USER_ROLES.includes(value);
+      }),
   ],
   getUsers,
 );
