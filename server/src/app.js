@@ -24,30 +24,90 @@ const { ErrorType } = require('./constants/errorMessages');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// * Security Headers
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
-  }),
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'blob:'],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
+    },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+  })
 );
 
-// * Rate limiting
+// * Rate limiting with different limits for different endpoints
 const limiter = rateLimit({
   windowMs: process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000, // ? 15 minutes
   max: process.env.RATE_LIMIT_MAX_REQUESTS || 100,
-  message: ErrorType.TOO_MANY_REQUESTS,
+  message: {
+    error: ErrorType.TOO_MANY_REQUESTS,
+    retryAfter: Math.ceil((process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000) / 1000),
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
+
+// * Stricter rate limiting for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // ? 15 minutes
+  max: 5, // ? limit each IP to 5 requests per windowMs
+  message: {
+    error: ErrorType.TOO_MANY_AUTHENTICATIONS,
+    retryAfter: 900,
+  },
+});
+
 app.use(limiter);
 
 // * CORS Config
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    credentials: true,
-  }),
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      process.env.CORS_ORIGIN,
+      'http://localhost:3000',
+      'http://localhost:5173',
+    ];
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+    // ? Allow requests with no origin (curl, postman, mobile app etc.)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(ErrorType.CORS_UNALLOWED));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 86400, // ? 24 hours
+};
+
+app.use(cors(corsOptions));
+
+// * Body parsing with size limits
+app.use(
+  express.json({
+    limit: '10mb',
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // * Logging with colored output
 morgan.token('colorstatus', (req, res) => colorizeStatus(res.statusCode));
@@ -65,11 +125,13 @@ app.get('/health', (req, res) => {
     status: 'OK',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
   });
 });
 
-// * API routes
-app.use('/api/auth', authRoutes);
+// * API routes with appropriate middleware
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', authenticateToken, productRoutes);
 app.use('/api/categories', authenticateToken, categoryRoutes);
 app.use('/api/orders', authenticateToken, orderRoutes);
@@ -79,6 +141,7 @@ app.use('/api/analytics', authenticateToken, analyticsRoutes);
 // * 404 handler for unmatched routes
 app.use('*', notFoundHandler);
 
+// * Global error handler
 app.use(errorHandler);
 
 // ! Start server

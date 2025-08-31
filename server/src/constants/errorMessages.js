@@ -2,7 +2,8 @@
 const ErrorType = {
   // ? Authentication & Authorization Errors
   INVALID_CREDENTIALS: 'Invalid email or password',
-  USER_ALREADY_EXISTS: 'An account already exists for this email. Please log in or reset your password.',
+  USER_ALREADY_EXISTS:
+    'An account already exists for this email. Please log in or reset your password.',
   CANNOT_CHANGE_OWN_ROLE: 'You cannot change your own role',
   CANNOT_DELETE_OWN_ACCOUNT: 'You cannot delete your own account',
   CURRENT_PASSWORD_REQUIRED: 'Current password is required to change password',
@@ -31,9 +32,13 @@ const ErrorType = {
   CANNOT_DELETE_CATEGORY_WITH_PRODUCTS:
     'Cannot delete category with products. Please move or delete products first.',
   CANNOT_DELETE_USER_WITH_ORDERS: 'Cannot delete user with existing orders',
+  CANNOT_DELETE_PRODUCT_WITH_ORDERS:
+    'Cannot delete product that has been ordered. Product has order history.',
   ONLY_PENDING_ORDERS_CAN_BE_DELETED: 'Only pending orders can be deleted',
   CATEGORY_HAS_NO_IMAGE: 'Category has no image to remove',
   TOO_MANY_REQUESTS: 'Too many requests from this IP, please try again later.',
+  TOO_MANY_AUTHENTICATIONS: 'Too many authentication attempts, please try again later.',
+  CORS_UNALLOWED: 'Not allowed by CORS',
 
   // ? System Errors
   DB_UNAVAILABLE: 'DB_UNAVAILABLE',
