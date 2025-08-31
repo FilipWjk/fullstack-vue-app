@@ -1,23 +1,31 @@
 {
-  "name": "client",
-  "version": "0.0.0",
+  "name": "ecommerce-management-client",
+  "version": "1.0.0",
+  "description": "Modern e-commerce management platform - Frontend",
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
-    "test:unit": "vitest",
-    "prepare": "cypress install",
-    "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
-    "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "build-only": "vite build",
+    "preview": "vite preview",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "lint:check": "eslint .",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "test:unit": "vitest",
+    "test:unit:coverage": "vitest --coverage",
+    "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
+    "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
+    "test:all": "npm run test:unit && npm run test:e2e",
+    "prepare": "cypress install",
+    "clean": "rm -rf dist node_modules/.vite",
+    "analyze": "npx vite-bundle-analyzer"
   },
   "dependencies": {
     "vue": "^3.5.18",

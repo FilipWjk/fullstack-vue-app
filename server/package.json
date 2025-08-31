@@ -1,20 +1,33 @@
 {
-  "name": "server",
+  "name": "ecommerce-management-server",
   "version": "1.0.0",
-  "description": "FWO Express.js Server",
-  "main": "index.js",
+  "description": "E-commerce Management Platform - Backend API",
+  "main": "src/app.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "dev": "nodemon src/app.js",
     "start": "node src/app.js",
-    "build": "tsc",
+    "build": "echo 'No build step needed for Node.js'",
     "db:migrate": "prisma migrate dev",
+    "db:migrate:prod": "prisma migrate deploy",
     "db:generate": "prisma generate",
     "db:seed": "node src/scripts/seed.js",
     "db:reset": "prisma migrate reset",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "db:studio": "prisma studio",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/ --fix",
+    "lint:check": "eslint src/",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "postinstall": "prisma generate"
   },
-  "author": "F.W.",
-  "license": "ISC",
+  "author": "Filip Wojtasik",
+  "license": "",
   "dependencies": {
     "@prisma/client": "^6.14.0",
     "bcryptjs": "^3.0.2",
