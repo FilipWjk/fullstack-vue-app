@@ -1,13 +1,13 @@
 const prisma = require('../utils/prismaClient');
 const bcrypt = require('bcryptjs');
 const { randomUUID } = require('crypto');
-const { UserRole, ProductStatus, OrderStatus, ORDER_STATUSES } = require('../constants/businessEnums');
+const { UserRole, ProductStatus, ORDER_STATUSES } = require('../constants/businessEnums');
 
 async function main() {
   console.log('Starting database seeding...');
 
   // * Clear existing data
-  console.log('Clearing existing data...');
+  console.log('\nClearing existing data...');
   await prisma.orderItem.deleteMany({});
   await prisma.order.deleteMany({});
   await prisma.product.deleteMany({});
@@ -15,7 +15,7 @@ async function main() {
   await prisma.user.deleteMany({});
 
   // * Create admin user
-  console.log('Creating admin user...');
+  console.log('\nCreating admin user...');
   const adminPassword = await bcrypt.hash('admin123', 12);
   const adminUser = await prisma.user.create({
     data: {
@@ -55,41 +55,41 @@ async function main() {
   console.log(`✅ Created ${users.length + 2} users`);
 
   // * Create categories
-  console.log('Creating categories...');
+  console.log('\nCreating categories...');
   const categories = await Promise.all([
     prisma.category.create({
       data: {
         name: 'Electronics',
         description: 'Electronic devices and gadgets',
-        image: '/uploads/categories/electronics.jpg',
+        image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Clothing',
         description: 'Fashion and apparel',
-        image: '/uploads/categories/clothing.jpg',
+        image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Books',
         description: 'Books and educational materials',
-        image: '/uploads/categories/books.jpg',
+        image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Home & Garden',
         description: 'Home improvement and garden supplies',
-        image: '/uploads/categories/home-garden.jpg',
+        image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Sports',
         description: 'Sports equipment and outdoor gear',
-        image: '/uploads/categories/sports.jpg',
+        image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
       },
     }),
   ]);
@@ -97,7 +97,7 @@ async function main() {
   console.log(`✅ Created ${categories.length} categories`);
 
   // * Create products
-  console.log('Creating products...');
+  console.log('\nCreating products...');
   const productData = [
     // * Electronics
     {
@@ -106,7 +106,9 @@ async function main() {
       price: 999.99,
       stock: 50,
       categoryId: categories[0].id,
-      images: JSON.stringify(['/uploads/products/iphone-14-pro.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1678652197831-2d180705cd2c?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -115,7 +117,7 @@ async function main() {
       price: 1199.99,
       stock: 25,
       categoryId: categories[0].id,
-      images: JSON.stringify(['/uploads/products/macbook-air-m2.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400']),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -124,7 +126,9 @@ async function main() {
       price: 799.99,
       stock: 35,
       categoryId: categories[0].id,
-      images: JSON.stringify(['/uploads/products/samsung-s23.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -133,7 +137,9 @@ async function main() {
       price: 249.99,
       stock: 100,
       categoryId: categories[0].id,
-      images: JSON.stringify(['/uploads/products/airpods-pro.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -142,7 +148,7 @@ async function main() {
       price: 599.99,
       stock: 40,
       categoryId: categories[0].id,
-      images: JSON.stringify(['/uploads/products/ipad-air.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400']),
       status: ProductStatus.ACTIVE,
     },
 
@@ -153,7 +159,9 @@ async function main() {
       price: 90.0,
       stock: 75,
       categoryId: categories[1].id,
-      images: JSON.stringify(['/uploads/products/nike-air-force-1.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -162,7 +170,7 @@ async function main() {
       price: 69.99,
       stock: 120,
       categoryId: categories[1].id,
-      images: JSON.stringify(['/uploads/products/levis-501.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1542272604-787c3835535d?w=400']),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -171,7 +179,7 @@ async function main() {
       price: 55.0,
       stock: 85,
       categoryId: categories[1].id,
-      images: JSON.stringify(['/uploads/products/adidas-hoodie.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400']),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -180,7 +188,9 @@ async function main() {
       price: 150.0,
       stock: 60,
       categoryId: categories[1].id,
-      images: JSON.stringify(['/uploads/products/rayban-aviators.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
 
@@ -191,7 +201,7 @@ async function main() {
       price: 12.99,
       stock: 200,
       categoryId: categories[2].id,
-      images: JSON.stringify(['/uploads/products/great-gatsby.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400']),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -200,7 +210,9 @@ async function main() {
       price: 45.99,
       stock: 80,
       categoryId: categories[2].id,
-      images: JSON.stringify(['/uploads/products/clean-code.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1589998059171-988d887df646?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -209,7 +221,9 @@ async function main() {
       price: 89.99,
       stock: 45,
       categoryId: categories[2].id,
-      images: JSON.stringify(['/uploads/products/harry-potter-set.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
 
@@ -220,7 +234,7 @@ async function main() {
       price: 749.99,
       stock: 15,
       categoryId: categories[3].id,
-      images: JSON.stringify(['/uploads/products/dyson-v15.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400']),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -229,7 +243,9 @@ async function main() {
       price: 349.99,
       stock: 20,
       categoryId: categories[3].id,
-      images: JSON.stringify(['/uploads/products/kitchenaid-mixer.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1585515656717-5c0c8b84eaa5?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -238,7 +254,9 @@ async function main() {
       price: 79.99,
       stock: 55,
       categoryId: categories[3].id,
-      images: JSON.stringify(['/uploads/products/garden-tools.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
 
@@ -249,7 +267,7 @@ async function main() {
       price: 199.99,
       stock: 30,
       categoryId: categories[4].id,
-      images: JSON.stringify(['/uploads/products/wilson-racket.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400']),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -258,7 +276,9 @@ async function main() {
       price: 39.99,
       stock: 100,
       categoryId: categories[4].id,
-      images: JSON.stringify(['/uploads/products/yoga-mat.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -267,7 +287,9 @@ async function main() {
       price: 299.99,
       stock: 25,
       categoryId: categories[4].id,
-      images: JSON.stringify(['/uploads/products/dumbbells.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
 
@@ -278,7 +300,9 @@ async function main() {
       price: 899.99,
       stock: 3,
       categoryId: categories[0].id,
-      images: JSON.stringify(['/uploads/products/luxury-watch.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -287,7 +311,7 @@ async function main() {
       price: 299.99,
       stock: 0,
       categoryId: categories[1].id,
-      images: JSON.stringify(['/uploads/products/vintage-jacket.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400']),
       status: ProductStatus.OUT_OF_STOCK,
     },
   ];
@@ -303,7 +327,7 @@ async function main() {
   console.log(`✅ Created ${products.length} products`);
 
   // * Create sample orders
-  console.log('Creating sample orders...');
+  console.log('\nCreating sample orders...');
   const orders = [];
 
   // * Create orders with different statuses and dates
@@ -357,16 +381,17 @@ async function main() {
 
   console.log(`✅ Created ${orders.length} sample orders`);
 
-  console.log('Database seeding completed successfully!');
+  console.log('\nDatabase seeding completed successfully!');
   console.log('\nSummary:');
   console.log(`Users: ${users.length + 2} (including admin and manager)`);
   console.log(`Categories: ${categories.length}`);
   console.log(`Products: ${products.length}`);
   console.log(`Orders: ${orders.length}`);
+  console.log();
 }
 
 main()
-  .catch((e) => {
+  .catch(e => {
     console.error('❌ Error during database seeding:', e);
     process.exit(1);
   })
