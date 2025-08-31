@@ -156,11 +156,7 @@
 
             <!-- Admin only section -->
             <li v-if="authStore.isAdmin">
-              <div
-                class="text-xs font-semibold leading-6 text-gray-400 dark:text-gray-500 uppercase tracking-wider"
-              >
-                Administration
-              </div>
+              <div :class="getSidebarSectionTitleClass()">Administration</div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
                 <li v-for="item in adminNavigation" :key="item.name">
                   <router-link :to="item.href" :class="getNavLinkClass(isActiveRoute(item.href))">

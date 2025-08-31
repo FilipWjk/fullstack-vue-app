@@ -58,8 +58,8 @@
             </div>
           </div>
 
-          <div v-if="authStore.error" class="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
-            <div class="text-sm text-red-700 dark:text-red-300">
+          <div v-if="authStore.error" :class="getWarningBadgeClass()">
+            <div :class="getWarningBadgeTextClass()">
               {{ authStore.error }}
             </div>
           </div>
@@ -109,14 +109,14 @@
                 <button
                   type="button"
                   @click="quickLogin('admin')"
-                  class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 dark:bg-blue-600 text-white px-3 py-2 rounded-lg text-xs hover:from-blue-600 hover:to-blue-700 dark:hover:bg-blue-700 hover:shadow-lg"
+                  :class="getDemoButtonClass('blue')"
                 >
                   Quick Admin Login
                 </button>
                 <button
                   type="button"
                   @click="quickLogin('manager')"
-                  class="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 dark:bg-green-600 text-white px-3 py-2 rounded-lg text-xs hover:from-emerald-600 hover:to-green-700 dark:hover:bg-green-700 hover:shadow-lg"
+                  :class="getDemoButtonClass('green')"
                 >
                   Quick Manager Login
                 </button>
@@ -152,6 +152,9 @@ const {
   getAuthSubtitleClass,
   getAuthFormContainerClass,
   getFormCardClass,
+  getWarningBadgeClass,
+  getWarningBadgeTextClass,
+  getDemoButtonClass,
 } = useUIClasses()
 
 // * Create validation service
