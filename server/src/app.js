@@ -52,7 +52,7 @@ app.use(
 // * Rate limiting with different limits for different endpoints
 const limiter = rateLimit({
   windowMs: process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000, // ? 15 minutes
-  max: process.env.RATE_LIMIT_MAX_REQUESTS || 100,
+  max: process.env.RATE_LIMIT_MAX_REQUESTS || 500,
   message: {
     error: ErrorType.TOO_MANY_REQUESTS,
     retryAfter: Math.ceil((process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000) / 1000),
@@ -64,7 +64,7 @@ const limiter = rateLimit({
 // * Stricter rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // ? 15 minutes
-  max: 5, // ? limit each IP to 5 requests per windowMs
+  max: 50, // ? limit each IP to 50 requests per windowMs
   message: {
     error: ErrorType.TOO_MANY_AUTHENTICATIONS,
     retryAfter: 900,

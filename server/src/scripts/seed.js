@@ -92,6 +92,13 @@ async function main() {
         image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
       },
     }),
+    prisma.category.create({
+      data: {
+        name: 'Test Category',
+        description: 'This category can be deleted as it has no products',
+        image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400',
+      },
+    }),
   ]);
 
   console.log(`✅ Created ${categories.length} categories`);
@@ -127,7 +134,7 @@ async function main() {
       stock: 35,
       categoryId: categories[0].id,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400',
+        'https://images.unsplash.com/photo-1709744722656-9b850470293f?q=80&w=327&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       ]),
       status: ProductStatus.ACTIVE,
     },
@@ -138,7 +145,7 @@ async function main() {
       stock: 100,
       categoryId: categories[0].id,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400',
+        'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400',
       ]),
       status: ProductStatus.ACTIVE,
     },
@@ -222,7 +229,7 @@ async function main() {
       stock: 45,
       categoryId: categories[2].id,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+        'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400',
       ]),
       status: ProductStatus.ACTIVE,
     },
@@ -234,7 +241,9 @@ async function main() {
       price: 749.99,
       stock: 15,
       categoryId: categories[3].id,
-      images: JSON.stringify(['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1722710070534-e31f0290d8de?q=80&w=435&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -244,7 +253,7 @@ async function main() {
       stock: 20,
       categoryId: categories[3].id,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1585515656717-5c0c8b84eaa5?w=400',
+        'https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400',
       ]),
       status: ProductStatus.ACTIVE,
     },
@@ -267,7 +276,9 @@ async function main() {
       price: 199.99,
       stock: 30,
       categoryId: categories[4].id,
-      images: JSON.stringify(['https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=400',
+      ]),
       status: ProductStatus.ACTIVE,
     },
     {
@@ -309,10 +320,52 @@ async function main() {
       name: 'Vintage Jacket',
       description: 'Rare vintage leather jacket',
       price: 299.99,
-      stock: 0,
+      stock: 3,
       categoryId: categories[1].id,
       images: JSON.stringify(['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400']),
-      status: ProductStatus.OUT_OF_STOCK,
+      status: ProductStatus.ACTIVE,
+    },
+    {
+      name: 'Sold Out Sneakers',
+      description: 'Popular sneakers that are currently out of stock',
+      price: 89.99,
+      stock: 0,
+      categoryId: categories[2].id, // ? Footwear category
+      images: JSON.stringify(['https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400']),
+      status: ProductStatus.ACTIVE,
+    },
+    {
+      name: 'Discontinued Headphones',
+      description: 'Premium wireless headphones - discontinued model',
+      price: 199.99,
+      stock: 15,
+      categoryId: categories[3].id, // Electronics category
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
+      ]),
+      status: ProductStatus.INACTIVE,
+    },
+    {
+      name: 'Old Season Jacket',
+      description: 'Winter jacket from previous season - no longer selling',
+      price: 149.99,
+      stock: 8,
+      categoryId: categories[1].id, // Clothing category
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?q=80&w=369&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      ]),
+      status: ProductStatus.INACTIVE,
+    },
+    {
+      name: 'Retired Smartwatch',
+      description: 'Older generation smartwatch - replaced by newer model',
+      price: 299.99,
+      stock: 3,
+      categoryId: categories[3].id, // Electronics category
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+      ]),
+      status: ProductStatus.INACTIVE,
     },
   ];
 
@@ -334,10 +387,24 @@ async function main() {
   const today = new Date();
 
   for (let i = 0; i < 20; i++) {
-    // * Random date within last 30 days
-    const randomDaysAgo = Math.floor(Math.random() * 30);
-    const orderDate = new Date(today);
-    orderDate.setDate(today.getDate() - randomDaysAgo);
+    let orderDate;
+
+    // * Create some orders for today (first 3 orders)
+    if (i < 3) {
+      orderDate = new Date(today);
+      // Set random time for today
+      orderDate.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60));
+    } else if (i < 8) {
+      // Current month orders (last 1-8 days)
+      const randomDaysAgo = Math.floor(Math.random() * 8) + 1;
+      orderDate = new Date(today);
+      orderDate.setDate(today.getDate() - randomDaysAgo);
+    } else {
+      // Older orders (last 9-30 days)
+      const randomDaysAgo = Math.floor(Math.random() * 22) + 9;
+      orderDate = new Date(today);
+      orderDate.setDate(today.getDate() - randomDaysAgo);
+    }
 
     const randomUser = users[Math.floor(Math.random() * users.length)];
     const randomStatus = ORDER_STATUSES[Math.floor(Math.random() * ORDER_STATUSES.length)];
@@ -380,6 +447,79 @@ async function main() {
   }
 
   console.log(`✅ Created ${orders.length} sample orders`);
+
+  // * Create specific orders for user1 (demo user for quick login)
+  console.log('\nCreating demo orders for user1...');
+  const user1 = users.find(u => u.email === 'user1@example.com');
+
+  if (user1) {
+    const demoOrders = [
+      {
+        status: 'DELIVERED',
+        products: [
+          { productIndex: 0, quantity: 2 },
+          { productIndex: 1, quantity: 1 },
+        ],
+        daysAgo: 5,
+        notes: 'Fast delivery, great products!',
+      },
+      {
+        status: 'SHIPPED',
+        products: [{ productIndex: 2, quantity: 1 }],
+        daysAgo: 2,
+        notes: 'Express shipping requested',
+      },
+      {
+        status: 'PROCESSING',
+        products: [
+          { productIndex: 3, quantity: 3 },
+          { productIndex: 4, quantity: 1 },
+        ],
+        daysAgo: 1,
+        notes: null,
+      },
+    ];
+
+    for (const demoOrder of demoOrders) {
+      const orderDate = new Date();
+      orderDate.setDate(orderDate.getDate() - demoOrder.daysAgo);
+
+      const orderNumber = `ORD-${randomUUID().replace(/-/g, '').toUpperCase()}`;
+
+      const selectedProducts = demoOrder.products.map(item => ({
+        productId: products[item.productIndex].id,
+        quantity: item.quantity,
+        price: products[item.productIndex].price,
+      }));
+
+      const total = selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      const order = await prisma.order.create({
+        data: {
+          orderNumber,
+          userId: user1.id,
+          status: demoOrder.status,
+          total,
+          shippingAddress: '123 Demo Street, 1010 Vienna, Austria',
+          billingAddress: '123 Demo Street, 1010 Vienna, Austria',
+          notes: demoOrder.notes,
+          createdAt: orderDate,
+          updatedAt: orderDate,
+          orderItems: {
+            create: selectedProducts.map(item => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+            })),
+          },
+        },
+      });
+
+      orders.push(order);
+    }
+
+    console.log(`✅ Created ${demoOrders.length} demo orders for user1`);
+  }
 
   console.log('\nDatabase seeding completed successfully!');
   console.log('\nSummary:');

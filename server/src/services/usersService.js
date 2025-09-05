@@ -9,10 +9,7 @@ async function listUsers({ page, limit, search, role }) {
   const where = {};
 
   if (search) {
-    where.OR = [
-      { name: { contains: search, mode: 'insensitive' } },
-      { email: { contains: search, mode: 'insensitive' } },
-    ];
+    where.OR = [{ name: { contains: search } }, { email: { contains: search } }];
   }
 
   if (role) {
