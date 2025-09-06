@@ -1201,7 +1201,7 @@ export const useUIClasses = () => {
   const getMyOrderDetailHeaderClass = () => 'md:flex md:items-center md:justify-between mb-8'
   const getMyOrderDetailHeaderTitleContainerClass = () => 'min-w-0 flex-1'
   const getMyOrderDetailHeaderTitleClass = () =>
-    'text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:truncate sm:text-3xl sm:tracking-tight'
+    'text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:truncate sm:text-2xl sm:tracking-tight'
   const getMyOrderDetailHeaderMetaClass = () =>
     'mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6'
   const getMyOrderDetailHeaderMetaItemClass = () =>

@@ -75,7 +75,7 @@
         <div :class="getMyOrderDetailCardContentClass()">
           <div class="sm:flex sm:items-center sm:justify-between">
             <div>
-              <h1 :class="getMyOrderDetailHeaderTitleClass()">Order #{{ order.orderNumber }}</h1>
+              <p :class="getMyOrderDetailHeaderTitleClass()">Order #{{ order.orderNumber }}</p>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Placed on {{ formatDate(order.createdAt) }}
               </p>
