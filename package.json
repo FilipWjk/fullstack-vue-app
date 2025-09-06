@@ -1,0 +1,69 @@
+{
+  "name": "ecommerce-management-platform",
+  "version": "1.0.0",
+  "description": "Full-stack e-commerce management platform built with Vue.js and Node.js",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "install:all": "npm install && npm run install:client && npm run install:server",
+    "install:client": "cd client && npm install",
+    "install:server": "cd server && npm install",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "start:client": "cd client && npm run preview",
+    "start:server": "cd server && npm start",
+    "test": "npm run test:client && npm run test:server",
+    "test:client": "cd client && npm run test:all",
+    "test:server": "cd server && npm test",
+    "lint": "npm run lint:client && npm run lint:server",
+    "lint:client": "cd client && npm run lint",
+    "lint:server": "cd server && npm run lint",
+    "format": "npm run format:client && npm run format:server",
+    "format:client": "cd client && npm run format",
+    "format:server": "cd server && npm run format",
+    "db:setup": "cd server && npm run db:generate && npm run db:migrate && npm run db:seed",
+    "db:reset": "cd server && npm run db:reset",
+    "clean": "npm run clean:client && npm run clean:server && rm -rf node_modules",
+    "clean:client": "cd client && npm run clean",
+    "clean:server": "cd server && rm -rf node_modules"
+  },
+  "keywords": [
+    "ecommerce",
+    "vue",
+    "nodejs",
+    "express",
+    "prisma",
+    "typescript",
+    "fullstack",
+    "management",
+    "dashboard"
+  ],
+  "author": {
+    "name": "Filip Wojtasik",
+    "url": "https://github.com/FilipWjk"
+  },
+  "license": "NONE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FilipWjk/fullstack-vue-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FilipWjk/fullstack-vue-app/issues"
+  },
+  "homepage": "https://github.com/FilipWjk/fullstack-vue-app#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}
