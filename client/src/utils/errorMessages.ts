@@ -19,6 +19,18 @@ export const ErrorMessages = {
 
   // ? Category errors
   CATEGORIES_FETCH_FAILED: 'Failed to fetch categories',
+  CATEGORY_FETCH_FAILED: 'Failed to fetch category',
+  CATEGORY_CREATE_FAILED: 'Failed to create category',
+  CATEGORY_UPDATE_FAILED: 'Failed to update category',
+  CATEGORY_DELETE_FAILED: 'Failed to delete category',
+  CATEGORY_IMAGE_REMOVE_FAILED: 'Failed to remove category image',
+
+  // ? User errors
+  USERS_FETCH_FAILED: 'Failed to fetch users',
+  USER_FETCH_FAILED: 'Failed to fetch user',
+  USER_CREATE_FAILED: 'Failed to create user',
+  USER_UPDATE_FAILED: 'Failed to update user',
+  USER_DELETE_FAILED: 'Failed to delete user',
 
   // ? Order errors
   ORDERS_FETCH_FAILED: 'Failed to fetch orders',
@@ -59,6 +71,13 @@ export const ErrorMessages = {
   PRODUCT_CREATE_SUCCESS: 'Product created successfully',
   PRODUCT_UPDATE_SUCCESS: 'Product updated successfully',
   PRODUCT_DELETE_SUCCESS: 'Product deleted successfully',
+  CATEGORY_CREATE_SUCCESS: 'Category created successfully',
+  CATEGORY_UPDATE_SUCCESS: 'Category updated successfully',
+  CATEGORY_DELETE_SUCCESS: 'Category deleted successfully',
+  CATEGORY_IMAGE_REMOVE_SUCCESS: 'Category image removed successfully',
+  USER_CREATE_SUCCESS: 'User created successfully',
+  USER_UPDATE_SUCCESS: 'User updated successfully',
+  USER_DELETE_SUCCESS: 'User deleted successfully',
   ORDER_CREATE_SUCCESS: 'Order created successfully',
   ORDER_UPDATE_SUCCESS: 'Order updated successfully',
 } as const

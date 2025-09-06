@@ -1,17 +1,20 @@
 <template>
   <div>
     <!-- Mobile sidebar overlay -->
-    <div v-if="sidebarOpen" class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+    <div
+      v-if="sidebarOpen"
+      :class="getSidebarMobileContainerClass()"
+      role="dialog"
+      aria-modal="true"
+    >
       <!-- Backdrop -->
       <div :class="getSidebarOverlayClass()" @click="$emit('close')"></div>
 
-      <div class="fixed inset-0 flex">
+      <div :class="getSidebarMobileBackdropClass()">
         <!-- Mobile sidebar -->
-        <div
-          class="relative mr-16 flex w-full max-w-xs flex-1 transform transition-transform duration-300"
-        >
+        <div :class="getSidebarMobileContentClass()">
           <!-- Close button -->
-          <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+          <div :class="getSidebarMobileCloseContainerClass()">
             <button type="button" :class="getSidebarCloseButtonClass()" @click="$emit('close')">
               <span :class="getScreenReaderClass()">Close sidebar</span>
               <svg
@@ -29,7 +32,7 @@
           <!-- Mobile sidebar content -->
           <div :class="getSidebarClass()">
             <!-- Logo/Brand Section -->
-            <div class="flex h-16 shrink-0 items-center space-x-3">
+            <div :class="getSidebarHeaderClass()">
               <div :class="getSidebarBrandClass()">
                 <svg
                   :class="getIconClass('standard', 'white')"
@@ -50,9 +53,9 @@
 
             <!-- Navigation -->
             <nav class="flex flex-1 flex-col">
-              <ul role="list" class="flex flex-1 flex-col gap-y-7">
+              <ul role="list" :class="getNavigationListClass()">
                 <li>
-                  <ul role="list" class="-mx-2 space-y-1">
+                  <ul role="list" :class="getNavigationSubListClass()">
                     <li v-for="item in navigation" :key="item.name">
                       <router-link
                         :to="item.href"
@@ -71,9 +74,9 @@
                 </li>
 
                 <!-- Admin only section -->
-                <li v-if="authStore.isAdmin">
+                <li v-if="authStore.canManageUsers">
                   <div :class="getSidebarSectionTitleClass()">Admin Settings</div>
-                  <ul role="list" class="-mx-2 mt-2 space-y-1">
+                  <ul role="list" :class="getNavigationSectionSpaceClass()">
                     <li v-for="item in adminNavigation" :key="item.name">
                       <router-link
                         :to="item.href"
@@ -93,9 +96,9 @@
               </ul>
 
               <!-- Bottom Section: User Profile & Settings -->
-              <div class="mt-4 space-y-4">
+              <div :class="getNavigationBottomSectionClass()">
                 <!-- Profile & Logout Actions -->
-                <div class="space-y-1">
+                <div :class="getNavigationActionsClass()">
                   <router-link
                     to="/profile"
                     @click="$emit('close')"
@@ -118,10 +121,10 @@
     </div>
 
     <!-- Desktop sidebar -->
-    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+    <div :class="getSidebarDesktopContainerClass()">
       <div :class="getSidebarClass()">
         <!-- Logo/Brand Section -->
-        <div class="flex h-16 shrink-0 items-center space-x-3">
+        <div :class="getSidebarHeaderClass()">
           <div :class="getSidebarBrandClass()">
             <svg :class="getIconClass('standard', 'white')" fill="currentColor" viewBox="0 0 20 20">
               <path
@@ -138,9 +141,9 @@
 
         <!-- Navigation -->
         <nav class="flex flex-1 flex-col">
-          <ul role="list" class="flex flex-1 flex-col gap-y-7">
+          <ul role="list" :class="getNavigationListClass()">
             <li>
-              <ul role="list" class="-mx-2 space-y-1">
+              <ul role="list" :class="getNavigationSubListClass()">
                 <li v-for="item in navigation" :key="item.name">
                   <router-link :to="item.href" :class="getNavLinkClass(isActiveRoute(item.href))">
                     <component
@@ -155,7 +158,7 @@
             </li>
 
             <!-- Admin only section -->
-            <li v-if="authStore.isAdmin">
+            <li v-if="authStore.canManageUsers">
               <div :class="getSidebarSectionTitleClass()">Administration</div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
                 <li v-for="item in adminNavigation" :key="item.name">
@@ -194,7 +197,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { useUIClasses } from '../composables/useUIClasses'
@@ -245,20 +248,61 @@ export default defineComponent({
       getSidebarSectionTitleClass,
       getIconClass,
       getScreenReaderClass,
+      getSidebarMobileContainerClass,
+      getSidebarMobileBackdropClass,
+      getSidebarMobileContentClass,
+      getSidebarMobileCloseContainerClass,
+      getSidebarDesktopContainerClass,
+      getNavigationListClass,
+      getNavigationSubListClass,
+      getNavigationSectionSpaceClass,
+      getNavigationBottomSectionClass,
+      getNavigationActionsClass,
+      getSidebarHeaderClass,
     } = useUIClasses()
 
-    const navigation = [
+    // * Role-based navigation
+    type NavigationItem = {
+      name: string
+      href: string
+      icon: typeof HomeIcon
+    }
+
+    const baseNavigation: NavigationItem[] = [
       { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+    ]
+
+    const userNavigation: NavigationItem[] = [
+      { name: 'My Orders', href: '/my-orders', icon: ClipboardDocumentListIcon },
+    ]
+
+    const managerNavigation: NavigationItem[] = [
       { name: 'Products', href: '/products', icon: ShoppingBagIcon },
       { name: 'Orders', href: '/orders', icon: ClipboardDocumentListIcon },
-      { name: 'Categories', href: '/categories', icon: TagIcon },
       { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
     ]
 
-    const adminNavigation = [
+    const adminNavigation: NavigationItem[] = [
+      { name: 'Categories', href: '/categories', icon: TagIcon },
       { name: 'Users', href: '/users', icon: UsersIcon },
-      { name: 'Reports', href: '/analytics', icon: ChartPieIcon },
     ]
+
+    // * Compute navigation based on user role
+    const navigation = computed(() => {
+      const nav = []
+
+      // * Users (only USER role) have no main navigation - they use Profile Settings
+      if (authStore.isUser && !authStore.canManageProducts) {
+        nav.push(...userNavigation)
+      }
+
+      // * Managers and Admins see dashboard and business operations
+      if (authStore.canManageProducts) {
+        nav.push(...baseNavigation, ...managerNavigation)
+      }
+
+      return nav
+    })
 
     const isActiveRoute = (href: string) => {
       return (
@@ -286,6 +330,17 @@ export default defineComponent({
       getSidebarSectionTitleClass,
       getIconClass,
       getScreenReaderClass,
+      getSidebarMobileContainerClass,
+      getSidebarMobileBackdropClass,
+      getSidebarMobileContentClass,
+      getSidebarMobileCloseContainerClass,
+      getSidebarDesktopContainerClass,
+      getNavigationListClass,
+      getNavigationSubListClass,
+      getNavigationSectionSpaceClass,
+      getNavigationBottomSectionClass,
+      getNavigationActionsClass,
+      getSidebarHeaderClass,
       navigation,
       adminNavigation,
       isActiveRoute,
