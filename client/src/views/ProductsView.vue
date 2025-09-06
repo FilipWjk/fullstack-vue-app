@@ -293,7 +293,7 @@ import {
   ChevronUpIcon,
   ChevronDownIcon,
 } from '@heroicons/vue/24/outline'
-import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 import { handleApiError } from '../utils/errorService'
 import { getImageUrl } from '../utils/urls'
 import { ProductStatus } from '../utils/enums'
@@ -460,7 +460,7 @@ interface Product {
 const deleteProduct = async (product: Product) => {
   try {
     await productStore.deleteProduct(product.id)
-    toast.success(ErrorMessages.PRODUCT_DELETE_SUCCESS)
+    toast.success(SuccessMessages.PRODUCT_DELETE_SUCCESS)
   } catch (error: unknown) {
     const errorMessage = handleApiError(error, 'PRODUCT_DELETE_FAILED')
     toast.error(errorMessage)

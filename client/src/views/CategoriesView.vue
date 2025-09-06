@@ -267,6 +267,7 @@ import { useToast } from 'vue-toastification'
 import { useCategoriesStore, type Category } from '../stores/categories'
 import { useUIClasses } from '../composables/useUIClasses'
 import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 import { getImageUrl } from '../utils/urls'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
 import type { AxiosError } from 'axios'
@@ -432,10 +433,10 @@ const handleSubmit = async () => {
 
     if (isEditing.value && editingCategory.value) {
       await categoriesStore.updateCategory(editingCategory.value.id, categoryData)
-      toast.success(ErrorMessages.CATEGORY_UPDATE_SUCCESS)
+      toast.success(SuccessMessages.CATEGORY_UPDATE_SUCCESS)
     } else {
       await categoriesStore.createCategory(categoryData)
-      toast.success(ErrorMessages.CATEGORY_CREATE_SUCCESS)
+      toast.success(SuccessMessages.CATEGORY_CREATE_SUCCESS)
     }
 
     closeModal()
@@ -471,7 +472,7 @@ const handleDelete = async () => {
   try {
     await categoriesStore.deleteCategory(categoryToDelete.value.id)
     closeDeleteModal()
-    toast.success(ErrorMessages.CATEGORY_DELETE_SUCCESS)
+    toast.success(SuccessMessages.CATEGORY_DELETE_SUCCESS)
   } catch (error) {
     console.error('Error deleting category:', error)
     toast.error(ErrorMessages.CATEGORY_DELETE_FAILED)

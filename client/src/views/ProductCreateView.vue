@@ -144,7 +144,7 @@ import { useToast } from 'vue-toastification'
 import { useProductStore } from '../stores/products'
 import { useUIClasses } from '../composables/useUIClasses'
 import { handleApiError } from '../utils/errorService'
-import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 
 const router = useRouter()
 const toast = useToast()
@@ -194,7 +194,7 @@ const handleSubmit = async () => {
     }
 
     await productsStore.createProduct(productData)
-    toast.success(ErrorMessages.PRODUCT_CREATE_SUCCESS)
+    toast.success(SuccessMessages.PRODUCT_CREATE_SUCCESS)
     router.push('/products')
   } catch (error: unknown) {
     const errorMessage = handleApiError(error, 'PRODUCT_CREATE_FAILED')

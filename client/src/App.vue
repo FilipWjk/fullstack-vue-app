@@ -95,6 +95,7 @@ import { useAuthStore } from './stores/auth'
 import { useUIClasses } from './composables/useUIClasses'
 import Sidebar from './components/Sidebar.vue'
 import { ErrorMessages } from './utils/errorMessages'
+import { SuccessMessages } from './utils/successMessages'
 
 // Headless UI components used for the profile menu
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
@@ -143,7 +144,7 @@ const navigateToProfile = () => {
 const handleLogout = async () => {
   try {
     await authStore.logout()
-    toast.success(ErrorMessages.LOGOUT_SUCCESS)
+    toast.success(SuccessMessages.LOGOUT_SUCCESS)
     router.push('/login')
   } catch {
     toast.error(ErrorMessages.LOGOUT_FAILED)

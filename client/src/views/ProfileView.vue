@@ -295,6 +295,7 @@ import { createValidationService, ValidationRules } from '../utils/validationSer
 import axios from 'axios'
 import { handleApiError, getValidationErrors } from '../utils/errorService'
 import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 import { formatDate } from '../utils/date'
 
 // Store & composables
@@ -444,7 +445,7 @@ const handleProfileUpdate = async () => {
     }
 
     authStore.applyDarkMode()
-    toast.success(ErrorMessages.PROFILE_UPDATE_SUCCESS)
+    toast.success(SuccessMessages.PROFILE_UPDATE_SUCCESS)
   } catch (error: unknown) {
     // * Revert dark mode preview to original state on error
     if (authStore.user) {
@@ -485,7 +486,7 @@ const handlePasswordChange = async () => {
     passwordValidation.form.confirmPassword = ''
     passwordValidation.clearErrors()
 
-    toast.success(ErrorMessages.PASSWORD_CHANGE_SUCCESS)
+    toast.success(SuccessMessages.PASSWORD_CHANGE_SUCCESS)
   } catch (error: unknown) {
     const errorMessage = handleApiError(error, 'PASSWORD_CHANGE_FAILED')
     toast.error(errorMessage)

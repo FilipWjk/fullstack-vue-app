@@ -6,6 +6,7 @@ export const ErrorMessages = {
 
   // ? Authentication errors
   LOGIN_FAILED: 'Login failed',
+  LOGOUT_FAILED: 'Error logging out',
   REGISTRATION_FAILED: 'Registration failed',
   TOKEN_EXPIRED: 'Session expired, please login again',
   UNAUTHORIZED: 'You are not authorized to perform this action',
@@ -24,7 +25,6 @@ export const ErrorMessages = {
   CATEGORY_CREATE_FAILED: 'Failed to create category',
   CATEGORY_UPDATE_FAILED: 'Failed to update category',
   CATEGORY_DELETE_FAILED: 'Failed to delete category',
-  CATEGORY_IMAGE_REMOVE_FAILED: 'Failed to remove category image',
 
   // ? User errors
   USERS_FETCH_FAILED: 'Failed to fetch users',
@@ -61,25 +61,6 @@ export const ErrorMessages = {
   DATA_LOAD_FAILED: 'Failed to load data',
   DATA_SAVE_FAILED: 'Failed to save data',
   IMAGE_URL_FAILED: 'Failed to load image from URL',
-
-  // ? Success messages
-  LOGIN_SUCCESS: 'Login successful',
-  LOGOUT_SUCCESS: 'Logged out successfully',
-  LOGOUT_FAILED: 'Error logging out',
-  REGISTRATION_SUCCESS: 'Account created successfully!',
-  PROFILE_UPDATE_SUCCESS: 'Profile updated successfully',
-  PASSWORD_CHANGE_SUCCESS: 'Password changed successfully',
-  PRODUCT_CREATE_SUCCESS: 'Product created successfully',
-  PRODUCT_UPDATE_SUCCESS: 'Product updated successfully',
-  PRODUCT_DELETE_SUCCESS: 'Product deleted successfully',
-  CATEGORY_CREATE_SUCCESS: 'Category created successfully',
-  CATEGORY_UPDATE_SUCCESS: 'Category updated successfully',
-  CATEGORY_DELETE_SUCCESS: 'Category deleted successfully',
-  CATEGORY_IMAGE_REMOVE_SUCCESS: 'Category image removed successfully',
-  USER_CREATE_SUCCESS: 'User created successfully',
-  USER_UPDATE_SUCCESS: 'User updated successfully',
-  USER_DELETE_SUCCESS: 'User deleted successfully',
-  ORDER_UPDATE_SUCCESS: 'Order updated successfully',
 } as const
 
 // * Type for error message values

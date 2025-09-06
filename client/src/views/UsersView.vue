@@ -261,7 +261,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useUsersStore, type User } from '../stores/users'
 import { useUIClasses } from '../composables/useUIClasses'
-import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 import { debounce, SEARCH_DEBOUNCE_DELAY } from '../utils/debounce'
 import { useTableSorting } from '../utils/sorting'
 import { useToast } from 'vue-toastification'
@@ -409,7 +409,7 @@ const handleSubmit = async (formData: {
         role: formData.role,
       }
       await usersStore.updateUser(editingUser.value.id, updateData)
-      toast.success(ErrorMessages.USER_UPDATE_SUCCESS)
+      toast.success(SuccessMessages.USER_UPDATE_SUCCESS)
     } else {
       const createData = {
         name: formData.name,
@@ -418,7 +418,7 @@ const handleSubmit = async (formData: {
         role: formData.role,
       }
       await usersStore.createUser(createData)
-      toast.success(ErrorMessages.USER_CREATE_SUCCESS)
+      toast.success(SuccessMessages.USER_CREATE_SUCCESS)
     }
 
     closeModal()
@@ -440,7 +440,7 @@ const handleDelete = async () => {
 
   try {
     await usersStore.deleteUser(userToDelete.value.id)
-    toast.success(ErrorMessages.USER_DELETE_SUCCESS)
+    toast.success(SuccessMessages.USER_DELETE_SUCCESS)
     closeDeleteModal()
   } catch (error: unknown) {
     console.error('Error deleting user:', error)

@@ -194,6 +194,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useOrderStore, type Order } from '../stores/orders'
 import { useToast } from 'vue-toastification'
 import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 import { formatCurrency } from '../utils/currency'
 import { formatDate } from '../utils/date'
 import { useTableSorting } from '../utils/sorting'
@@ -277,7 +278,7 @@ const getSortIcon = (field: string) => {
 const updateOrderStatus = async (order: Order) => {
   try {
     await orderStore.updateOrderStatus(order.id, order.status)
-    toast.success(ErrorMessages.ORDER_UPDATE_SUCCESS)
+    toast.success(SuccessMessages.ORDER_UPDATE_SUCCESS)
   } catch (error) {
     console.error('Error updating order status:', error)
     toast.error(ErrorMessages.ORDER_UPDATE_FAILED)

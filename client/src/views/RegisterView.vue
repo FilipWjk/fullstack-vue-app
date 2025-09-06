@@ -160,6 +160,7 @@ import { useUIClasses } from '../composables/useUIClasses'
 import { createValidationService, ValidationRules } from '../utils/validationService'
 import { handleApiError, getValidationErrors } from '../utils/errorService'
 import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 
 const router = useRouter()
 const toast = useToast()
@@ -238,7 +239,7 @@ const handleRegister = async () => {
       password: String(validation.form.password),
     })
 
-    toast.success(ErrorMessages.REGISTRATION_SUCCESS)
+    toast.success(SuccessMessages.REGISTRATION_SUCCESS)
     // * Redirect based on user role after successful registration
     if (authStore.canManageProducts) {
       await router.push('/dashboard')

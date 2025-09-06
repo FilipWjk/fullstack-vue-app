@@ -138,6 +138,7 @@ import { useToast } from 'vue-toastification'
 import { useUIClasses } from '../composables/useUIClasses'
 import { handleApiError } from '../utils/errorService'
 import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 
 const router = useRouter()
 const route = useRoute()
@@ -239,7 +240,7 @@ const handleSubmit = async () => {
     }
 
     await productsStore.updateProduct(productId, productData)
-    toast.success(ErrorMessages.PRODUCT_UPDATE_SUCCESS)
+    toast.success(SuccessMessages.PRODUCT_UPDATE_SUCCESS)
     router.push('/products')
   } catch (error: unknown) {
     const errorMessage = handleApiError(error, 'PRODUCT_UPDATE_FAILED')

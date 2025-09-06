@@ -139,7 +139,7 @@ import { useToast } from 'vue-toastification'
 import { useAuthStore } from '../stores/auth'
 import { useUIClasses } from '../composables/useUIClasses'
 import { createValidationService, ValidationRules } from '../utils/validationService'
-import { ErrorMessages } from '../utils/errorMessages'
+import { SuccessMessages } from '../utils/successMessages'
 
 const router = useRouter()
 const toast = useToast()
@@ -204,7 +204,7 @@ const handleLogin = async () => {
       email: String(validation.form.email),
       password: String(validation.form.password),
     })
-    toast.success(ErrorMessages.LOGIN_SUCCESS)
+    toast.success(SuccessMessages.LOGIN_SUCCESS)
   } catch (error: unknown) {
     const errorMessage = handleApiError(error, 'LOGIN_FAILED')
     toast.error(errorMessage)
@@ -224,7 +224,7 @@ const quickLogin = async (role: string) => {
     validation.form.password = creds.password
     try {
       await authStore.login(creds)
-      toast.success(ErrorMessages.LOGIN_SUCCESS)
+      toast.success(SuccessMessages.LOGIN_SUCCESS)
 
       // * Redirect based on user role after successful login
       if (authStore.canManageProducts) {
