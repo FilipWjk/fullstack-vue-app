@@ -10,9 +10,7 @@
     <div :class="getCardClass() + ' space-y-6'">
       <div :class="getFlexItemsCenterClass()">
         <div class="flex-shrink-0">
-          <div
-            class="h-16 w-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold"
-          >
+          <div :class="getProfileAvatarClass()">
             {{ userInitials }}
           </div>
         </div>
@@ -54,11 +52,11 @@
     <div :class="getCardClass()">
       <h2 :class="getCardHeaderClass()">Personal Information</h2>
 
-      <form @submit.prevent="handleProfileUpdate" class="space-y-6">
+      <form @submit.prevent="handleProfileUpdate" :class="getProfileFormSpaceClass()">
         <!-- Name Field -->
         <div>
           <label for="name" :class="getLabelClass()">Full Name</label>
-          <div class="mt-2">
+          <div :class="getProfileFieldContainerClass()">
             <input
               id="name"
               name="name"
@@ -79,7 +77,7 @@
         <!-- Email Field -->
         <div>
           <label for="email" :class="getLabelClass()">Email Address</label>
-          <div class="mt-2">
+          <div :class="getProfileFieldContainerClass()">
             <input
               id="email"
               name="email"
@@ -98,10 +96,10 @@
         </div>
 
         <!-- Dark Mode Toggle -->
-        <div class="flex items-center justify-between">
+        <div :class="getProfileDarkModeContainerClass()">
           <div>
             <label :class="getLabelClass()">Dark Mode</label>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+            <p :class="getProfileDarkModeDescriptionClass()">
               Toggle between light and dark themes
             </p>
           </div>
@@ -109,18 +107,9 @@
             type="button"
             @click="toggleDarkMode"
             :disabled="isLoading"
-            :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-              profileValidation.form.darkMode ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700',
-              isLoading ? 'opacity-50 cursor-not-allowed' : '',
-            ]"
+            :class="getProfileToggleClass(!!profileValidation.form.darkMode, isLoading)"
           >
-            <span
-              :class="[
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-                profileValidation.form.darkMode ? 'translate-x-5' : 'translate-x-0',
-              ]"
-            />
+            <span :class="getProfileToggleKnobClass(!!profileValidation.form.darkMode)" />
           </button>
         </div>
 
@@ -136,13 +125,13 @@
         >
           <svg
             v-if="isLoading"
-            class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            :class="getProfileSpinnerClass()"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
           >
             <circle
-              class="opacity-25"
+              :class="getProfileSpinnerCircleClass()"
               cx="12"
               cy="12"
               r="10"
@@ -150,7 +139,7 @@
               stroke-width="4"
             ></circle>
             <path
-              class="opacity-75"
+              :class="getProfileSpinnerPathClass()"
               fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
@@ -164,11 +153,11 @@
     <div :class="getCardClass()">
       <h2 :class="getCardHeaderClass()">Change Password</h2>
 
-      <form @submit.prevent="handlePasswordChange" class="space-y-6">
+      <form @submit.prevent="handlePasswordChange" :class="getProfileFormSpaceClass()">
         <!-- Current Password -->
         <div>
           <label for="currentPassword" :class="getLabelClass()">Current Password</label>
-          <div class="mt-2">
+          <div :class="getProfileFieldContainerClass()">
             <input
               id="currentPassword"
               name="currentPassword"
@@ -192,7 +181,7 @@
         <!-- New Password -->
         <div>
           <label for="newPassword" :class="getLabelClass()">New Password</label>
-          <div class="mt-2">
+          <div :class="getProfileFieldContainerClass()">
             <input
               id="newPassword"
               name="newPassword"
@@ -213,7 +202,7 @@
         <!-- Confirm New Password -->
         <div>
           <label for="confirmPassword" :class="getLabelClass()">Confirm New Password</label>
-          <div class="mt-2">
+          <div :class="getProfileFieldContainerClass()">
             <input
               id="confirmPassword"
               name="confirmPassword"
@@ -235,19 +224,16 @@
         </div>
 
         <!-- Password Requirements -->
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-          <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Password Requirements:
-          </h4>
-          <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-            <li class="flex items-center">
+        <div :class="getProfilePasswordRequirementsClass()">
+          <h4 :class="getProfilePasswordRequirementsTitleClass()">Password Requirements:</h4>
+          <ul :class="getProfilePasswordRequirementsListClass()">
+            <li :class="getProfilePasswordRequirementItemClass()">
               <svg
-                :class="[
-                  'w-4 h-4 mr-2',
-                  String(passwordValidation.form.newPassword).length >= 6
-                    ? 'text-green-500'
-                    : 'text-gray-400',
-                ]"
+                :class="
+                  getProfilePasswordRequirementIconClass(
+                    String(passwordValidation.form.newPassword).length >= 6,
+                  )
+                "
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -274,13 +260,13 @@
         >
           <svg
             v-if="isPasswordLoading"
-            class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            :class="getProfileSpinnerClass()"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
           >
             <circle
-              class="opacity-25"
+              :class="getProfileSpinnerCircleClass()"
               cx="12"
               cy="12"
               r="10"
@@ -288,7 +274,7 @@
               stroke-width="4"
             ></circle>
             <path
-              class="opacity-75"
+              :class="getProfileSpinnerPathClass()"
               fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
@@ -309,6 +295,7 @@ import { createValidationService, ValidationRules } from '../utils/validationSer
 import axios from 'axios'
 import { handleApiError, getValidationErrors } from '../utils/errorService'
 import { ErrorMessages } from '../utils/errorMessages'
+import { formatDate as formatDateUtil } from '../utils/date'
 
 // Store & composables
 const authStore = useAuthStore()
@@ -338,6 +325,22 @@ const {
   // Stat classes
   getStatNumberClass,
   getStatLabelClass,
+  // Profile specific classes
+  getProfileAvatarClass,
+  getProfileFormSpaceClass,
+  getProfileFieldContainerClass,
+  getProfileDarkModeContainerClass,
+  getProfileDarkModeDescriptionClass,
+  getProfileToggleClass,
+  getProfileToggleKnobClass,
+  getProfileSpinnerClass,
+  getProfileSpinnerCircleClass,
+  getProfileSpinnerPathClass,
+  getProfilePasswordRequirementsClass,
+  getProfilePasswordRequirementsTitleClass,
+  getProfilePasswordRequirementsListClass,
+  getProfilePasswordRequirementItemClass,
+  getProfilePasswordRequirementIconClass,
 } = useUIClasses()
 
 // * State
@@ -397,11 +400,7 @@ const hasProfileChanges = computed(() => {
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A'
-  return new Date(dateString).toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
+  return formatDateUtil(dateString)
 }
 
 const loadProfileData = async () => {

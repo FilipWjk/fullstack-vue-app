@@ -4,10 +4,7 @@
       <h2 :class="getAuthTitleClass()">Create your account</h2>
       <p :class="getAuthSubtitleClass()">
         Or
-        <router-link
-          to="/login"
-          class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-        >
+        <router-link to="/login" :class="getAuthLinkClass()">
           sign in to your existing account
         </router-link>
       </p>
@@ -15,20 +12,14 @@
 
     <div :class="getAuthFormContainerClass()">
       <div :class="getFormCardClass()">
-        <div
-          class="absolute inset-0 bg-gradient-to-r from-blue-400/5 via-purple-400/5 to-indigo-400/5 dark:opacity-0"
-        ></div>
-        <div
-          class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-3xl dark:opacity-0"
-        ></div>
-        <div
-          class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/10 to-blue-400/10 rounded-full blur-3xl dark:opacity-0"
-        ></div>
+        <div :class="getAuthBackgroundOverlayClass()"></div>
+        <div :class="getAuthDecorationTopClass()"></div>
+        <div :class="getAuthDecorationBottomClass()"></div>
 
-        <form class="space-y-6 relative z-10" @submit.prevent="handleRegister">
+        <form :class="getFormSpaceClass()" @submit.prevent="handleRegister">
           <div>
             <label for="name" :class="getLabelClass()"> Full Name </label>
-            <div class="mt-2">
+            <div :class="getFormFieldSpaceClass()">
               <input
                 id="name"
                 name="name"
@@ -50,7 +41,7 @@
 
           <div>
             <label for="email" :class="getLabelClass()"> Email address </label>
-            <div class="mt-2">
+            <div :class="getFormFieldSpaceClass()">
               <input
                 id="email"
                 name="email"
@@ -72,7 +63,7 @@
 
           <div>
             <label for="password" :class="getLabelClass()"> Password </label>
-            <div class="mt-2">
+            <div :class="getFormFieldSpaceClass()">
               <input
                 id="password"
                 name="password"
@@ -90,14 +81,12 @@
             <div v-if="validation.fieldErrors.password" :class="getErrorMessageClass()">
               {{ validation.fieldErrors.password }}
             </div>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Must be at least 6 characters long
-            </p>
+            <p :class="getPasswordHintClass()">Must be at least 6 characters long</p>
           </div>
 
           <div>
             <label for="confirmPassword" :class="getLabelClass()"> Confirm Password </label>
-            <div class="mt-2">
+            <div :class="getFormFieldSpaceClass()">
               <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -117,8 +106,8 @@
             </div>
           </div>
 
-          <div v-if="authStore.error" class="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
-            <div class="text-sm text-red-700 dark:text-red-300">
+          <div v-if="authStore.error" :class="getWarningBadgeClass()">
+            <div :class="getWarningBadgeTextClass()">
               {{ authStore.error }}
             </div>
           </div>
@@ -129,7 +118,7 @@
             :class="getWarningMessageClass()"
           >
             <div :class="getWarningTextClass()">
-              <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <svg :class="getIconClass('small')" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fill-rule="evenodd"
                   d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
@@ -150,8 +139,8 @@
                   : getPrimaryButtonClass()
               "
             >
-              <span v-if="authStore.isLoading" class="mr-2">
-                <div class="spinner"></div>
+              <span v-if="authStore.isLoading" :class="getInlineSpinnerClass()">
+                <div :class="getSpinnerElementClass()"></div>
               </span>
               {{ authStore.isLoading ? 'Creating account...' : 'Create account' }}
             </button>
@@ -189,6 +178,18 @@ const {
   getAuthSubtitleClass,
   getAuthFormContainerClass,
   getFormCardClass,
+  getAuthLinkClass,
+  getFormSpaceClass,
+  getFormFieldSpaceClass,
+  getAuthBackgroundOverlayClass,
+  getAuthDecorationTopClass,
+  getAuthDecorationBottomClass,
+  getPasswordHintClass,
+  getInlineSpinnerClass,
+  getSpinnerElementClass,
+  getWarningBadgeClass,
+  getWarningBadgeTextClass,
+  getIconClass,
 } = useUIClasses()
 
 // * Create validation service
@@ -238,7 +239,12 @@ const handleRegister = async () => {
     })
 
     toast.success(ErrorMessages.REGISTRATION_SUCCESS)
-    await router.push('/dashboard')
+    // * Redirect based on user role after successful registration
+    if (authStore.canManageProducts) {
+      await router.push('/dashboard')
+    } else {
+      await router.push('/my-orders')
+    }
   } catch (error: unknown) {
     const errorMessage = handleApiError(error, 'REGISTRATION_FAILED')
     const validationErrors = getValidationErrors(error)
@@ -252,23 +258,3 @@ const handleRegister = async () => {
   }
 }
 </script>
-
-<style scoped>
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>

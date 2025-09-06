@@ -4,21 +4,16 @@
       <h2 :class="getAuthTitleClass()">Sign in to your account</h2>
       <p :class="getAuthSubtitleClass()">
         Or
-        <router-link
-          to="/register"
-          class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-        >
-          create a new account
-        </router-link>
+        <router-link to="/register" :class="getAuthLinkClass()"> create a new account </router-link>
       </p>
     </div>
 
     <div :class="getAuthFormContainerClass()">
       <div :class="getFormCardClass()">
-        <form class="space-y-6 relative z-10" @submit.prevent="handleLogin">
+        <form :class="getFormSpaceClass()" @submit.prevent="handleLogin">
           <div>
             <label for="email" :class="getLabelClass()"> Email address </label>
-            <div class="mt-2">
+            <div :class="getFormFieldSpaceClass()">
               <input
                 id="email"
                 name="email"
@@ -39,7 +34,7 @@
 
           <div>
             <label for="password" :class="getLabelClass()"> Password </label>
-            <div class="mt-2">
+            <div :class="getFormFieldSpaceClass()">
               <input
                 id="password"
                 name="password"
@@ -74,38 +69,39 @@
                   : getPrimaryButtonClass()
               "
             >
-              <span v-if="authStore.isLoading" class="mr-2">
-                <div class="spinner"></div>
+              <span v-if="authStore.isLoading" :class="getInlineSpinnerClass()">
+                <div :class="getSpinnerElementClass()"></div>
               </span>
               {{ authStore.isLoading ? 'Signing in...' : 'Sign in' }}
             </button>
           </div>
         </form>
 
-        <div class="mt-6 relative z-10">
-          <div class="relative">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-gray-200 dark:border-gray-600" />
+        <div :class="getDemoSectionClass()">
+          <div :class="getDemoSeparatorContainerClass()">
+            <div :class="getDemoSeparatorLineClass()">
+              <div :class="getDemoSeparatorClass()" />
             </div>
-            <div class="relative flex justify-center text-sm font-medium leading-6">
-              <span
-                class="bg-white/80 backdrop-blur-sm dark:bg-gray-800 px-6 text-gray-600 dark:text-gray-300 rounded-full"
-                >Demo Credentials</span
-              >
+            <div :class="getDemoSeparatorLabelContainerClass()">
+              <span :class="getDemoSeparatorLabelClass()">Demo Credentials</span>
             </div>
           </div>
 
-          <div class="mt-6 grid grid-cols-1 gap-4">
-            <div class="text-sm text-gray-500 dark:text-gray-300 space-y-2">
+          <div :class="getDemoCredentialsContainerClass()">
+            <div :class="getDemoCredentialsTextClass()">
               <p>
-                <strong class="text-gray-700 dark:text-gray-200">Admin:</strong> admin@ecommerce.com
-                / admin123
+                <strong :class="getDemoCredentialLabelClass()">Admin:</strong> admin@ecommerce.com /
+                admin123
               </p>
               <p>
-                <strong class="text-gray-700 dark:text-gray-200">Manager:</strong>
+                <strong :class="getDemoCredentialLabelClass()">Manager:</strong>
                 manager@ecommerce.com / manager123
               </p>
-              <div class="flex space-x-2 mt-3">
+              <p>
+                <strong :class="getDemoCredentialLabelClass()">User:</strong>
+                user1@example.com / user1123
+              </p>
+              <div :class="getDemoButtonsContainerClass()">
                 <button
                   type="button"
                   @click="quickLogin('admin')"
@@ -119,6 +115,13 @@
                   :class="getDemoButtonClass('green')"
                 >
                   Quick Manager Login
+                </button>
+                <button
+                  type="button"
+                  @click="quickLogin('user')"
+                  :class="getDemoButtonClass('purple')"
+                >
+                  Quick User Login
                 </button>
               </div>
             </div>
@@ -155,6 +158,21 @@ const {
   getWarningBadgeClass,
   getWarningBadgeTextClass,
   getDemoButtonClass,
+  getAuthLinkClass,
+  getFormSpaceClass,
+  getFormFieldSpaceClass,
+  getInlineSpinnerClass,
+  getSpinnerElementClass,
+  getDemoSectionClass,
+  getDemoSeparatorContainerClass,
+  getDemoSeparatorLineClass,
+  getDemoSeparatorClass,
+  getDemoSeparatorLabelContainerClass,
+  getDemoSeparatorLabelClass,
+  getDemoCredentialsContainerClass,
+  getDemoCredentialsTextClass,
+  getDemoCredentialLabelClass,
+  getDemoButtonsContainerClass,
 } = useUIClasses()
 
 // * Create validation service
@@ -187,7 +205,6 @@ const handleLogin = async () => {
       password: String(validation.form.password),
     })
     toast.success(ErrorMessages.LOGIN_SUCCESS)
-    await router.push('/dashboard')
   } catch (error: unknown) {
     const errorMessage = handleApiError(error, 'LOGIN_FAILED')
     toast.error(errorMessage)
@@ -198,6 +215,7 @@ const quickLogin = async (role: string) => {
   const credentials = {
     admin: { email: 'admin@ecommerce.com', password: 'admin123' },
     manager: { email: 'manager@ecommerce.com', password: 'manager123' },
+    user: { email: 'user1@example.com', password: 'user1123' },
   }
 
   const creds = credentials[role as keyof typeof credentials]
@@ -206,7 +224,14 @@ const quickLogin = async (role: string) => {
     validation.form.password = creds.password
     try {
       await authStore.login(creds)
-      window.location.href = '/dashboard'
+      toast.success(ErrorMessages.LOGIN_SUCCESS)
+
+      // * Redirect based on user role after successful login
+      if (authStore.canManageProducts) {
+        await router.push('/dashboard')
+      } else {
+        await router.push('/my-orders')
+      }
     } catch (error: unknown) {
       const errorMessage = handleApiError(error, 'LOGIN_FAILED')
       toast.error(errorMessage)
