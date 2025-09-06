@@ -35,7 +35,6 @@ const ErrorType = {
   CANNOT_DELETE_PRODUCT_WITH_ORDERS:
     'Cannot delete product that has been ordered. Product has order history.',
   ONLY_PENDING_ORDERS_CAN_BE_DELETED: 'Only pending orders can be deleted',
-  CATEGORY_HAS_NO_IMAGE: 'Category has no image to remove',
   TOO_MANY_REQUESTS: 'Too many requests from this IP, please try again later.',
   TOO_MANY_AUTHENTICATIONS: 'Too many authentication attempts, please try again later.',
   CORS_UNALLOWED: 'Not allowed by CORS',

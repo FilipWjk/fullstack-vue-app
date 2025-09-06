@@ -25,7 +25,6 @@ const SuccessMessage = {
   CATEGORY_CREATED: 'Category created successfully',
   CATEGORY_UPDATED: 'Category updated successfully',
   CATEGORY_DELETED: 'Category deleted successfully',
-  CATEGORY_IMAGE_REMOVED: 'Category image removed successfully',
 };
 
 module.exports = {

@@ -4,7 +4,6 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-const path = require('path');
 require('colors');
 require('dotenv').config();
 
@@ -115,9 +114,6 @@ morgan.token('colormethod', (req, res) => colorizeMethod(req.method));
 
 const customFormat = ':colormethod :url :colorstatus :response-time ms - :res[content-length]';
 app.use(morgan(customFormat));
-
-// * Static file serving for uploads
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // ? Health check endpoint
 app.get('/health', (req, res) => {

@@ -60,6 +60,7 @@ export const ErrorMessages = {
   OPERATION_FAILED: 'Operation failed',
   DATA_LOAD_FAILED: 'Failed to load data',
   DATA_SAVE_FAILED: 'Failed to save data',
+  IMAGE_URL_FAILED: 'Failed to load image from URL',
 
   // ? Success messages
   LOGIN_SUCCESS: 'Login successful',

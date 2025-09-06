@@ -1,6 +1,4 @@
 const prisma = require('../utils/prismaClient');
-const path = require('path');
-const fs = require('fs').promises;
 const { ProductStatus } = require('../constants/businessEnums');
 const { ErrorType } = require('../constants/errorMessages');
 const { createError, logError, isError } = require('../utils/errorUtils');
@@ -46,17 +44,6 @@ function sanitizeProductData(data) {
   if (sanitized.price) sanitized.price = parseFloat(sanitized.price);
   if (sanitized.stock) sanitized.stock = parseInt(sanitized.stock);
   return sanitized;
-}
-
-async function deleteImageFiles(imageUrls) {
-  for (const imageUrl of imageUrls) {
-    const imagePath = path.join(__dirname, '..', '..', imageUrl);
-    try {
-      await fs.unlink(imagePath);
-    } catch (err) {
-      // * ignore file deletion errors
-    }
-  }
 }
 
 const PRODUCT_INCLUDE_RELATIONS = {
@@ -201,12 +188,7 @@ async function deleteProduct(id) {
     return error;
   }
 
-  // * Delete associated image files
-  if (product.images) {
-    const imageUrls = JSON.parse(product.images);
-    await deleteImageFiles(imageUrls);
-  }
-
+  // * Delete product from database
   await prisma.product.delete({ where: { id } });
   return {};
 }
@@ -219,9 +201,6 @@ async function removeProductImages(id, imageUrls) {
 
   const existingImages = product.images ? JSON.parse(product.images) : [];
   const updatedImages = existingImages.filter(img => !imageUrls.includes(img));
-
-  // * Delete image files from filesystem
-  await deleteImageFiles(imageUrls);
 
   // * Update product with remaining images
   const updated = await prisma.product.update({
