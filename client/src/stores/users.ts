@@ -195,11 +195,22 @@ export const useUsersStore = defineStore('users', () => {
 
       const index = state.value.users.findIndex((user) => user.id === id)
       if (index !== -1) {
-        state.value.users[index] = response.data.data
+        // Preserve _count and other data that might not be returned from the update
+        const existingUser = state.value.users[index]
+        state.value.users[index] = {
+          ...existingUser,
+          ...response.data.data,
+          _count: existingUser._count, // Preserve order count
+        }
       }
 
       if (state.value.currentUser?.id === id) {
-        state.value.currentUser = response.data.data
+        const existingCurrentUser = state.value.currentUser
+        state.value.currentUser = {
+          ...existingCurrentUser,
+          ...response.data.data,
+          _count: existingCurrentUser._count, // Preserve order count
+        }
       }
 
       return response.data

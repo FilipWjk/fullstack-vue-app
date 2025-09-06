@@ -54,6 +54,7 @@ export interface AuthState {
   token: string | null
   isLoading: boolean
   error: string | null
+  isInitialized: boolean
 }
 
 export interface AuthResponse {
@@ -81,6 +82,7 @@ export const useAuthStore = defineStore('auth', {
     token: localStorage.getItem('token') || null,
     isLoading: false,
     error: null,
+    isInitialized: false,
   }),
 
   getters: {
@@ -88,6 +90,11 @@ export const useAuthStore = defineStore('auth', {
     isAdmin: (state): boolean => state.user?.role === UserRole.ADMIN,
     isManager: (state): boolean =>
       state.user?.role === UserRole.ADMIN || state.user?.role === UserRole.MANAGER,
+    isUser: (state): boolean => state.user?.role === UserRole.USER,
+    canManageProducts: (state): boolean =>
+      state.user?.role === UserRole.ADMIN || state.user?.role === UserRole.MANAGER,
+    canManageUsers: (state): boolean => state.user?.role === UserRole.ADMIN,
+    canManageCategories: (state): boolean => state.user?.role === UserRole.ADMIN,
   },
 
   actions: {
@@ -165,6 +172,7 @@ export const useAuthStore = defineStore('auth', {
         this.user = null
         this.token = null
         this.error = null
+        this.isInitialized = false
 
         localStorage.removeItem('token')
         delete axios.defaults.headers.common['Authorization']
@@ -234,11 +242,17 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    init(): void {
+    async init(): Promise<void> {
       this.setAuthHeader()
       if (this.token) {
-        this.fetchProfile()
+        try {
+          await this.fetchProfile()
+        } catch (error) {
+          console.error('Failed to initialize auth:', error)
+          this.logout()
+        }
       }
+      this.isInitialized = true
       this.setupInterceptors()
     },
 
