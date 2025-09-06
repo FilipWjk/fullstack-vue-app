@@ -19,9 +19,7 @@ const SuccessMessage = {
   IMAGES_REMOVED: 'Images removed successfully',
 
   // ? Orders
-  ORDER_CREATED: 'Order created successfully',
   ORDER_UPDATED: 'Order updated successfully',
-  ORDER_DELETED: 'Order deleted successfully',
 
   // ? Categories
   CATEGORY_CREATED: 'Category created successfully',

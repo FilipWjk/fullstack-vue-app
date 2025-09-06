@@ -16,6 +16,7 @@ export const ErrorMessages = {
   PRODUCT_CREATE_FAILED: 'Failed to create product',
   PRODUCT_UPDATE_FAILED: 'Failed to update product',
   PRODUCT_DELETE_FAILED: 'Failed to delete product',
+  PRODUCT_ID_MISSING: 'Product ID is missing',
 
   // ? Category errors
   CATEGORIES_FETCH_FAILED: 'Failed to fetch categories',
@@ -35,10 +36,9 @@ export const ErrorMessages = {
   // ? Order errors
   ORDERS_FETCH_FAILED: 'Failed to fetch orders',
   ORDER_FETCH_FAILED: 'Failed to fetch order',
-  ORDER_CREATE_FAILED: 'Failed to create order',
   ORDER_UPDATE_FAILED: 'Failed to update order',
-  ORDER_DELETE_FAILED: 'Failed to delete order',
   ORDER_STATS_FETCH_FAILED: 'Failed to fetch order stats',
+  ORDER_ID_MISSING: 'Order ID is missing',
 
   // ? Analytics errors
   DASHBOARD_FETCH_FAILED: 'Failed to fetch dashboard data',
@@ -78,7 +78,6 @@ export const ErrorMessages = {
   USER_CREATE_SUCCESS: 'User created successfully',
   USER_UPDATE_SUCCESS: 'User updated successfully',
   USER_DELETE_SUCCESS: 'User deleted successfully',
-  ORDER_CREATE_SUCCESS: 'Order created successfully',
   ORDER_UPDATE_SUCCESS: 'Order updated successfully',
 } as const
 
@@ -111,9 +110,7 @@ export const ErrorCategories = {
   ORDERS: {
     FETCH_FAILED: ErrorMessages.ORDERS_FETCH_FAILED,
     FETCH_SINGLE_FAILED: ErrorMessages.ORDER_FETCH_FAILED,
-    CREATE_FAILED: ErrorMessages.ORDER_CREATE_FAILED,
     UPDATE_FAILED: ErrorMessages.ORDER_UPDATE_FAILED,
-    DELETE_FAILED: ErrorMessages.ORDER_DELETE_FAILED,
     STATS_FETCH_FAILED: ErrorMessages.ORDER_STATS_FETCH_FAILED,
   },
 

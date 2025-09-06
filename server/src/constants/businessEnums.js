@@ -9,7 +9,6 @@ const UserRole = {
 const ProductStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-  OUT_OF_STOCK: 'OUT_OF_STOCK',
 };
 
 // * Order Status Enum -> Defines all available order statuses in the system

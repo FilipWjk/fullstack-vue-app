@@ -40,6 +40,9 @@ const ErrorType = {
   TOO_MANY_AUTHENTICATIONS: 'Too many authentication attempts, please try again later.',
   CORS_UNALLOWED: 'Not allowed by CORS',
 
+  // ? UUIDs
+  CATEGORY_ID_MUST_BE_VALID: 'Category ID must be a valid UUID',
+
   // ? System Errors
   DB_UNAVAILABLE: 'DB_UNAVAILABLE',
   SERVICE_UNAVAILABLE: 'Service temporarily unavailable. Please try again later.',

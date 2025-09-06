@@ -35,13 +35,13 @@
         </div>
         <div :class="getTextCenterClass()">
           <div :class="getStatNumberClass('green')">
-            {{ formatDate(authStore.user?.createdAt) }}
+            {{ authStore.user?.createdAt ? formatDate(authStore.user.createdAt) : 'N/A' }}
           </div>
           <div :class="getStatLabelClass()">Member Since</div>
         </div>
         <div :class="getTextCenterClass()">
           <div :class="getStatNumberClass('purple')">
-            {{ formatDate(authStore.user?.updatedAt) }}
+            {{ authStore.user?.updatedAt ? formatDate(authStore.user.updatedAt) : 'N/A' }}
           </div>
           <div :class="getStatLabelClass()">Last Updated</div>
         </div>
@@ -295,7 +295,7 @@ import { createValidationService, ValidationRules } from '../utils/validationSer
 import axios from 'axios'
 import { handleApiError, getValidationErrors } from '../utils/errorService'
 import { ErrorMessages } from '../utils/errorMessages'
-import { formatDate as formatDateUtil } from '../utils/date'
+import { formatDate } from '../utils/date'
 
 // Store & composables
 const authStore = useAuthStore()
@@ -397,11 +397,6 @@ const hasProfileChanges = computed(() => {
     profileValidation.form.darkMode !== authStore.user.darkMode
   )
 })
-
-const formatDate = (dateString: string | undefined) => {
-  if (!dateString) return 'N/A'
-  return formatDateUtil(dateString)
-}
 
 const loadProfileData = async () => {
   try {

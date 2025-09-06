@@ -58,14 +58,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // * Handle file upload errors
-  if (err.code === 'LIMIT_FILE_SIZE' || err.code === 'LIMIT_FILE_COUNT') {
-    return res.status(400).json({
-      success: false,
-      message: ErrorType.VALIDATION_FAILED,
-    });
-  }
-
   // * Handle custom application errors (from errorUtils.js)
   if (err.status && err.error) {
     return res.status(err.status).json({
