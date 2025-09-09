@@ -220,7 +220,7 @@ Cypress.Commands.add('createTestProduct', ((productData = {}) => {
     description: 'Test product description',
     price: 29.99,
     stock: 100,
-    imageUrl: 'https://via.placeholder.com/300x200',
+    imageUrl: 'https://images.unsplash.com/photo-1678652197831-2d180705cd2c?w=400',
   }
 
   // Ensure we have a valid categoryId (UUID) by fetching categories first

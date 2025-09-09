@@ -209,6 +209,9 @@ async function orderSummaryStats() {
     }),
   ]);
 
+  const totalRevenueValue = totalRevenue._sum.total || 0;
+  const averageOrderValue = totalOrders > 0 ? Number(totalRevenueValue) / Number(totalOrders) : 0;
+
   return {
     totalOrders,
     ordersByStatus: {
@@ -218,7 +221,8 @@ async function orderSummaryStats() {
       delivered: deliveredOrders,
       cancelled: cancelledOrders,
     },
-    totalRevenue: totalRevenue._sum.total || 0,
+    totalRevenue: totalRevenueValue,
+    averageOrderValue,
     todayOrders,
     thisMonthOrders,
   };

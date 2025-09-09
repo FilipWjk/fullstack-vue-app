@@ -63,7 +63,7 @@ const limiter = rateLimit({
 // * Stricter rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // ? 15 minutes
-  max: 50, // ? limit each IP to 50 requests per windowMs
+  max: 150, // ? limit each IP to 50 requests per windowMs
   message: {
     error: ErrorType.TOO_MANY_AUTHENTICATIONS,
     retryAfter: 900,
@@ -79,6 +79,7 @@ const corsOptions = {
       process.env.CORS_ORIGIN,
       'http://localhost:3000',
       'http://localhost:5173',
+      'http://localhost:4173', // added for Cypress/Vite preview
     ];
 
     // ? Allow requests with no origin (curl, postman, mobile app etc.)
