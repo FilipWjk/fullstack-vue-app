@@ -1,0 +1,150 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Product 1",
+      "price": 10.0,
+      "stock": 100,
+      "categoryId": 1
+    },
+    {
+      "id": 2,
+      "name": "Product 2",
+      "price": 20.0,
+      "stock": 50,
+      "categoryId": 1
+    },
+    {
+      "id": 3,
+      "name": "Product 3",
+      "price": 30.0,
+      "stock": 25,
+      "categoryId": 2
+    },
+    {
+      "id": 4,
+      "name": "Product 4",
+      "price": 40.0,
+      "stock": 75,
+      "categoryId": 2
+    },
+    {
+      "id": 5,
+      "name": "Product 5",
+      "price": 50.0,
+      "stock": 100,
+      "categoryId": 1
+    },
+    {
+      "id": 6,
+      "name": "Product 6",
+      "price": 60.0,
+      "stock": 80,
+      "categoryId": 3
+    },
+    {
+      "id": 7,
+      "name": "Product 7",
+      "price": 70.0,
+      "stock": 60,
+      "categoryId": 3
+    },
+    {
+      "id": 8,
+      "name": "Product 8",
+      "price": 80.0,
+      "stock": 40,
+      "categoryId": 2
+    },
+    {
+      "id": 9,
+      "name": "Product 9",
+      "price": 90.0,
+      "stock": 20,
+      "categoryId": 1
+    },
+    {
+      "id": 10,
+      "name": "Product 10",
+      "price": 100.0,
+      "stock": 10,
+      "categoryId": 3
+    },
+    {
+      "id": 11,
+      "name": "Product 11",
+      "price": 110.0,
+      "stock": 90,
+      "categoryId": 1
+    },
+    {
+      "id": 12,
+      "name": "Product 12",
+      "price": 120.0,
+      "stock": 70,
+      "categoryId": 2
+    },
+    {
+      "id": 13,
+      "name": "Product 13",
+      "price": 130.0,
+      "stock": 50,
+      "categoryId": 3
+    },
+    {
+      "id": 14,
+      "name": "Product 14",
+      "price": 140.0,
+      "stock": 30,
+      "categoryId": 1
+    },
+    {
+      "id": 15,
+      "name": "Product 15",
+      "price": 150.0,
+      "stock": 15,
+      "categoryId": 2
+    },
+    {
+      "id": 16,
+      "name": "Product 16",
+      "price": 160.0,
+      "stock": 85,
+      "categoryId": 3
+    },
+    {
+      "id": 17,
+      "name": "Product 17",
+      "price": 170.0,
+      "stock": 65,
+      "categoryId": 1
+    },
+    {
+      "id": 18,
+      "name": "Product 18",
+      "price": 180.0,
+      "stock": 45,
+      "categoryId": 2
+    },
+    {
+      "id": 19,
+      "name": "Product 19",
+      "price": 190.0,
+      "stock": 25,
+      "categoryId": 3
+    },
+    {
+      "id": 20,
+      "name": "Product 20",
+      "price": 200.0,
+      "stock": 5,
+      "categoryId": 1
+    }
+  ],
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 50,
+    "totalItems": 1000,
+    "itemsPerPage": 20
+  }
+}

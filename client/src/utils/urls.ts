@@ -1,10 +1,10 @@
 export const getApiBase = () => {
   try {
     const env = import.meta.env
-    return (env && env.VITE_API_URL) || 'http://localhost:3000'
+  return (env && env.VITE_API_URL) || 'http://localhost:3001/api'
   } catch (e: unknown) {
     console.log(e)
-    return 'http://localhost:3000'
+  return 'http://localhost:3001/api'
   }
 }
 

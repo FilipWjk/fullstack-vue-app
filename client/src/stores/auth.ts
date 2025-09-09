@@ -3,7 +3,7 @@ import axios from 'axios'
 import { UserRole, type UserRoleType } from '@/utils/enums'
 import { handleApiError } from '@/utils/errorService'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
 axios.defaults.baseURL = API_BASE_URL
 axios.defaults.withCredentials = true
