@@ -16,7 +16,7 @@ router.post(
     body('password').isLength({ min: 6 }),
     body('name').trim().isLength({ min: 2 }),
   ],
-  register,
+  register
 );
 
 /**

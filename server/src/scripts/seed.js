@@ -61,42 +61,42 @@ async function main() {
       data: {
         name: 'Electronics',
         description: 'Electronic devices and gadgets',
-        image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Clothing',
         description: 'Fashion and apparel',
-        image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Books',
         description: 'Books and educational materials',
-        image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Home & Garden',
         description: 'Home improvement and garden supplies',
-        image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Sports',
         description: 'Sports equipment and outdoor gear',
-        image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
       },
     }),
     prisma.category.create({
       data: {
         name: 'Test Category',
         description: 'This category can be deleted as it has no products',
-        image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400',
       },
     }),
   ]);

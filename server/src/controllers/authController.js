@@ -11,11 +11,11 @@ async function register(req, res, next) {
 
     if (!errors.isEmpty()) {
       const errorResponse = createValidationError(
-        errors.array().map((err) => ({
+        errors.array().map(err => ({
           field: err.path || err.param,
           message: err.msg,
           value: err.value,
-        })),
+        }))
       );
       return res.status(errorResponse.status).json({
         success: false,
@@ -48,11 +48,11 @@ async function login(req, res, next) {
 
     if (!errors.isEmpty()) {
       const errorResponse = createValidationError(
-        errors.array().map((err) => ({
+        errors.array().map(err => ({
           field: err.path || err.param,
           message: err.msg,
           value: err.value,
-        })),
+        }))
       );
       return res.status(errorResponse.status).json({
         success: false,

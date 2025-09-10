@@ -45,7 +45,7 @@ async function getCategoryById(id) {
 }
 
 // * POST /api/categories - Create new category with validation
-async function createCategory({ name, description, imagePath }) {
+async function createCategory({ name, description, imageUrl }) {
   // ? Check if category name already exists
   const existing = await prisma.category.findUnique({ where: { name } });
   if (existing) {
@@ -56,7 +56,7 @@ async function createCategory({ name, description, imagePath }) {
 
   // ? Create new category with provided data
   const category = await prisma.category.create({
-    data: { name, description, image: imagePath || null },
+    data: { name, description, imageUrl: imageUrl || null },
     include: { _count: { select: { products: true } } },
   });
 
@@ -64,7 +64,7 @@ async function createCategory({ name, description, imagePath }) {
 }
 
 // * PUT /api/categories/:id - Update existing category
-async function updateCategory(id, updateData, newImagePath) {
+async function updateCategory(id, updateData, newImageUrl) {
   // ? Check if category exists
   const existing = await prisma.category.findUnique({ where: { id } });
   if (!existing) {
@@ -86,10 +86,8 @@ async function updateCategory(id, updateData, newImagePath) {
   }
 
   // ? Handle image updates
-  if (newImagePath !== undefined) {
-    // ? If newImagePath is an empty string, set image to null
-    // ? If newImagePath has a value, update to the new URL
-    updateData.image = newImagePath || null;
+  if (newImageUrl !== undefined) {
+    updateData.imageUrl = newImageUrl || null;
   }
 
   // ? Update category in database

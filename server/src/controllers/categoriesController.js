@@ -55,7 +55,7 @@ async function createCategory(req, res, next) {
     const { name, description, imageUrl } = req.body;
 
     // ? Create category via service layer
-    const result = await createCategoryService({ name, description, imagePath: imageUrl });
+    const result = await createCategoryService({ name, description, imageUrl });
 
     // ? Handle service errors
     if (isError(result)) {
@@ -93,11 +93,11 @@ async function updateCategory(req, res, next) {
     const updateData = { ...req.body };
 
     // ? Extract imageUrl for separate handling in service layer
-    const newImagePath = req.body.imageUrl;
+    const newImageUrl = req.body.imageUrl;
     delete updateData.imageUrl;
 
     // ? Update category via service layer
-    const result = await updateCategoryService(id, updateData, newImagePath);
+    const result = await updateCategoryService(id, updateData, newImageUrl);
 
     // ? Handle service errors
     if (isError(result)) {
