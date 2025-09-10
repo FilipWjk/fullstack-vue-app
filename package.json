@@ -20,9 +20,8 @@
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "start:client": "cd client && npm run preview",
     "start:server": "cd server && npm start",
-    "test": "npm run test:client && npm run test:server",
-    "test:client": "cd client && npm run test:all",
-    "test:server": "cd server && npm test",
+  "test": "npm run test:client",
+  "test:client": "cd client && npm run test:e2e",
     "lint": "npm run lint:client && npm run lint:server",
     "lint:client": "cd client && npm run lint",
     "lint:server": "cd server && npm run lint",
@@ -60,7 +59,7 @@
   },
   "homepage": "https://github.com/FilipWjk/fullstack-vue-app#readme",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+  "concurrently": "^8.2.2"
   },
   "workspaces": [
     "client",

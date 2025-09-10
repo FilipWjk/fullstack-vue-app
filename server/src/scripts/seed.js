@@ -40,7 +40,7 @@ async function main() {
   // * Create some regular users
   const users = [];
   for (let i = 1; i <= 5; i++) {
-    const userPassword = await bcrypt.hash(`user${i}123`, 12);
+    const userPassword = await bcrypt.hash(`user123`, 12);
     const user = await prisma.user.create({
       data: {
         email: `user${i}@example.com`,

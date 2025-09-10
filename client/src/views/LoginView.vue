@@ -112,7 +112,7 @@
               </p>
               <p>
                 <strong :class="getDemoCredentialLabelClass()">User:</strong>
-                user1@example.com / user1123
+                user1@example.com / user123
               </p>
               <div :class="getDemoButtonsContainerClass()">
                 <button
@@ -228,7 +228,7 @@ const quickLogin = async (role: string) => {
   const credentials = {
     admin: { email: 'admin@ecommerce.com', password: 'admin123' },
     manager: { email: 'manager@ecommerce.com', password: 'manager123' },
-    user: { email: 'user1@example.com', password: 'user1123' },
+    user: { email: 'user1@example.com', password: 'user123' },
   }
 
   const creds = credentials[role as keyof typeof credentials]

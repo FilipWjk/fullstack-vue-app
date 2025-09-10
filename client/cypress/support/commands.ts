@@ -48,7 +48,7 @@ declare global {
 
 // Test user credentials for different roles
 const TEST_USERS = {
-  USER: { email: 'user1@example.com', password: 'user1123' },
+  USER: { email: 'user1@example.com', password: 'user123' },
   MANAGER: { email: 'manager@ecommerce.com', password: 'manager123' },
   ADMIN: { email: 'admin@ecommerce.com', password: 'admin123' },
 }

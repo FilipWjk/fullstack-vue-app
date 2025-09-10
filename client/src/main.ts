@@ -28,6 +28,9 @@ async function initApp() {
     icon: true,
   })
 
+  // ? Apply dark mode by default
+  document.documentElement.classList.add('dark')
+
   const authStore = useAuthStore()
   await authStore.init()
 

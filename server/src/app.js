@@ -63,7 +63,7 @@ const limiter = rateLimit({
 // * Stricter rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // ? 15 minutes
-  max: process.env.AUTH_LIMIT_MAX_REQUESTS || 150, // ? limit each IP to 50 requests per windowMs
+  max: process.env.AUTH_LIMIT_MAX_REQUESTS || 150, // ? limit each IP to 150 requests per windowMs
   message: {
     error: ErrorType.TOO_MANY_AUTHENTICATIONS,
     retryAfter: 900,

@@ -297,7 +297,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watchEffect } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useCategoriesStore, type Category } from '../stores/categories'
 import { useUIClasses } from '../composables/useUIClasses'

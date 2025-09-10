@@ -259,7 +259,7 @@ describe('API Integration Tests', () => {
         url: `${Cypress.env('apiUrl')}/auth/login`,
         body: {
           email: 'user1@example.com',
-          password: 'user1123',
+          password: 'user123',
         },
       }).then((response) => {
         userToken = response.body.data.token

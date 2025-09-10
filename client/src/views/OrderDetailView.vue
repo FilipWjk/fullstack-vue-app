@@ -248,9 +248,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useOrderStore, type Order } from '../stores/orders'
+import { useOrderStore } from '../stores/orders'
 import { useToast } from 'vue-toastification'
 import { ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import { handleApiError } from '../utils/errorService'

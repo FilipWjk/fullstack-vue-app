@@ -366,7 +366,7 @@ const profileValidation = createValidationService(
   {
     name: '',
     email: '',
-    darkMode: false as boolean,
+    darkMode: true as boolean,
   },
   {
     name: { required: true, rules: [ValidationRules.minNameLength] },
