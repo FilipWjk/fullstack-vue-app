@@ -1,7 +1,7 @@
 <template>
   <div :class="getPageContainerClass()">
     <!-- Header -->
-    <div :class="getPageHeaderClass()">
+    <div :class="getPageHeaderClass()" data-testid="profile-header">
       <h1 :class="getPageTitleClass()">Profile Settings</h1>
       <p :class="getPageDescriptionClass()">Manage your account settings and preferences</p>
     </div>
@@ -19,7 +19,7 @@
             {{ authStore.user?.name }}
           </h3>
           <p :class="getTextMutedClass()">{{ authStore.user?.email }}</p>
-          <p :class="getTextSmallMutedClass() + ' capitalize'">
+          <p :class="getTextSmallMutedClass() + ' capitalize'" data-testid="current-role">
             {{ authStore.user?.role?.toLowerCase() }} Account
           </p>
         </div>
@@ -52,7 +52,11 @@
     <div :class="getCardClass()">
       <h2 :class="getCardHeaderClass()">Personal Information</h2>
 
-      <form @submit.prevent="handleProfileUpdate" :class="getProfileFormSpaceClass()">
+      <form
+        @submit.prevent="handleProfileUpdate"
+        :class="getProfileFormSpaceClass()"
+        data-testid="profile-form"
+      >
         <!-- Name Field -->
         <div>
           <label for="name" :class="getLabelClass()">Full Name</label>
@@ -67,6 +71,7 @@
               @input="profileValidation.onFieldInput('name')"
               :disabled="isLoading"
               :class="getInputClass(!!profileValidation.fieldErrors.name)"
+              data-testid="name-input"
             />
             <p v-if="profileValidation.fieldErrors.name" :class="getErrorMessageClass()">
               {{ profileValidation.fieldErrors.name }}
@@ -88,6 +93,7 @@
               @input="profileValidation.onFieldInput('email')"
               :disabled="isLoading"
               :class="getInputClass(!!profileValidation.fieldErrors.email)"
+              data-testid="email-input"
             />
             <p v-if="profileValidation.fieldErrors.email" :class="getErrorMessageClass()">
               {{ profileValidation.fieldErrors.email }}
@@ -108,6 +114,7 @@
             @click="toggleDarkMode"
             :disabled="isLoading"
             :class="getProfileToggleClass(!!profileValidation.form.darkMode, isLoading)"
+            data-testid="dark-mode-toggle"
           >
             <span :class="getProfileToggleKnobClass(!!profileValidation.form.darkMode)" />
           </button>
@@ -122,6 +129,7 @@
               ? getPrimaryButtonClass()
               : getDisabledButtonClass()
           "
+          data-testid="save-profile"
         >
           <svg
             v-if="isLoading"
@@ -168,6 +176,7 @@
               @input="passwordValidation.onFieldInput('currentPassword')"
               :disabled="isPasswordLoading"
               :class="getInputClass(!!passwordValidation.fieldErrors.currentPassword)"
+              data-testid="current-password"
             />
             <p
               v-if="passwordValidation.fieldErrors.currentPassword"
@@ -192,6 +201,7 @@
               @input="passwordValidation.onFieldInput('newPassword')"
               :disabled="isPasswordLoading"
               :class="getInputClass(!!passwordValidation.fieldErrors.newPassword)"
+              data-testid="new-password"
             />
             <p v-if="passwordValidation.fieldErrors.newPassword" :class="getErrorMessageClass()">
               {{ passwordValidation.fieldErrors.newPassword }}
@@ -213,6 +223,7 @@
               @input="passwordValidation.onFieldInput('confirmPassword')"
               :disabled="isPasswordLoading"
               :class="getInputClass(!!passwordValidation.fieldErrors.confirmPassword)"
+              data-testid="confirm-password"
             />
             <p
               v-if="passwordValidation.fieldErrors.confirmPassword"
@@ -257,6 +268,7 @@
               ? getPrimaryButtonClass()
               : getDisabledButtonClass()
           "
+          data-testid="save-profile"
         >
           <svg
             v-if="isPasswordLoading"

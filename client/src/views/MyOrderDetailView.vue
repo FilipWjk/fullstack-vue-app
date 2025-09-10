@@ -2,7 +2,11 @@
   <div :class="getMyOrderDetailContainerClass()">
     <!-- Back button -->
     <div :class="getMyOrderDetailBackButtonContainerClass()">
-      <button @click="$router.go(-1)" :class="getMyOrderDetailBackButtonClass()">
+      <button
+        @click="$router.go(-1)"
+        :class="getMyOrderDetailBackButtonClass()"
+        data-testid="back-to-orders"
+      >
         <svg
           :class="getMyOrderDetailBackButtonIconClass()"
           fill="none"
@@ -71,17 +75,24 @@
     <!-- Order details -->
     <div v-else-if="order">
       <!-- Order header -->
-      <div :class="getMyOrderDetailCardClass()">
+      <div :class="getMyOrderDetailCardClass()" data-testid="order-info">
         <div :class="getMyOrderDetailCardContentClass()">
-          <div class="sm:flex sm:items-center sm:justify-between">
+          <div
+            class="sm:flex sm:items-center sm:justify-between"
+            data-testid="order-details-header"
+          >
             <div>
               <p :class="getMyOrderDetailHeaderTitleClass()">Order #{{ order.orderNumber }}</p>
-              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400" data-testid="order-date">
                 Placed on {{ formatDate(order.createdAt) }}
               </p>
             </div>
             <div class="mt-4 sm:mt-0">
-              <span :class="getMyOrderDetailStatusBadgeClass(order.status)">
+              <span
+                :class="getMyOrderDetailStatusBadgeClass(order.status)"
+                data-testid="order-status"
+                class="status-badge"
+              >
                 {{ order.status }}
               </span>
             </div>
@@ -90,7 +101,7 @@
       </div>
 
       <!-- Order items -->
-      <div :class="getMyOrderDetailCardClass()">
+      <div :class="getMyOrderDetailCardClass()" data-testid="order-items">
         <div :class="getMyOrderDetailCardContentClass()">
           <h2 :class="getMyOrderDetailCardHeaderTitleClass()">Order Items</h2>
           <div class="flow-root">
@@ -99,6 +110,7 @@
                 v-for="item in order.orderItems"
                 :key="item.id"
                 :class="getMyOrderDetailItemClass()"
+                data-testid="order-item"
               >
                 <div class="flex items-center space-x-4">
                   <div :class="getMyOrderDetailItemImageClass()">
@@ -128,18 +140,18 @@
                     </div>
                   </div>
                   <div :class="getMyOrderDetailItemContentClass()">
-                    <h3 :class="getMyOrderDetailItemNameClass()">
+                    <h3 :class="getMyOrderDetailItemNameClass()" data-testid="product-name">
                       {{ item.product.name }}
                     </h3>
                     <p :class="getMyOrderDetailItemQuantityClass()">
                       Quantity: {{ item.quantity }}
                     </p>
-                    <p :class="getMyOrderDetailItemQuantityClass()">
+                    <p :class="getMyOrderDetailItemQuantityClass()" data-testid="product-price">
                       Price: {{ formatCurrency(Number(item.price)) }} each
                     </p>
                   </div>
                   <div class="text-right">
-                    <p :class="getMyOrderDetailItemPriceClass()">
+                    <p :class="getMyOrderDetailItemPriceClass()" data-testid="item-total">
                       {{ formatCurrency(Number(item.price) * item.quantity) }}
                     </p>
                   </div>
@@ -151,13 +163,13 @@
       </div>
 
       <!-- Order summary -->
-      <div :class="getMyOrderDetailCardClass()">
+      <div :class="getMyOrderDetailCardClass()" data-testid="order-summary">
         <div :class="getMyOrderDetailCardContentClass()">
           <h2 :class="getMyOrderDetailCardHeaderTitleClass()">Order Summary</h2>
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
               <span class="text-gray-600 dark:text-gray-400">Subtotal</span>
-              <span class="text-gray-900 dark:text-gray-100">{{
+              <span class="text-gray-900 dark:text-gray-100" data-testid="order-total">{{
                 formatCurrency(Number(order.total))
               }}</span>
             </div>
@@ -168,7 +180,7 @@
             <div class="border-t border-gray-200 dark:border-gray-700 pt-2">
               <div class="flex justify-between text-base font-medium">
                 <span class="text-gray-900 dark:text-gray-100">Total</span>
-                <span class="text-gray-900 dark:text-gray-100">{{
+                <span class="text-gray-900 dark:text-gray-100" data-testid="order-total">{{
                   formatCurrency(Number(order.total))
                 }}</span>
               </div>

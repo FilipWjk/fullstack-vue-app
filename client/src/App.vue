@@ -3,7 +3,11 @@
     <!-- Show layout only if authenticated -->
     <div v-if="authStore.isAuthenticated" :class="getMainLayoutClass()">
       <!-- Sidebar -->
-      <Sidebar :sidebarOpen="sidebarOpen" @close="sidebarOpen = false" />
+      <Sidebar
+        :sidebarOpen="sidebarOpen"
+        :is-collapsed="isSidebarCollapsed"
+        @close="sidebarOpen = false"
+      />
 
       <!-- Main content -->
       <div :class="getContentAreaClass()">
@@ -12,10 +16,14 @@
           <button
             type="button"
             :class="getMobileMenuButtonClass()"
-            @click="sidebarOpen = !sidebarOpen"
+            @click="toggleSidebar"
+            data-testid="sidebar-toggle"
           >
-            <span :class="getScreenReaderClass()">Open sidebar</span>
-            <Bars3Icon :class="getMenuIconClass()" aria-hidden="true" />
+            <!-- Nested span to provide a second test hook for mobile without changing the button's own testid -->
+            <span data-testid="mobile-menu-button" style="display: contents">
+              <span :class="getScreenReaderClass()">Open sidebar</span>
+              <Bars3Icon :class="getMenuIconClass()" aria-hidden="true" />
+            </span>
           </button>
 
           <!-- Separator -->
@@ -28,10 +36,14 @@
                 <div :class="getWelcomeTextClass()">Welcome back, {{ authStore.user?.name }}!</div>
               </div>
             </div>
-            <div class="flex items-center gap-x-4 lg:gap-x-6">
+            <div class="flex items-center gap-x-4 lg:gap-x-6" data-testid="topbar-actions">
               <!-- Profile dropdown -->
               <Menu as="div" class="relative">
-                <MenuButton :class="getProfileButtonClass()">
+                <MenuButton
+                  :class="getProfileButtonClass()"
+                  data-testid="user-menu"
+                  aria-label="User menu"
+                >
                   <span :class="getScreenReaderClass()">Open user menu</span>
                   <div :class="getProfileAvatarClass()">
                     <span :class="getUserNameTextClass()">
@@ -72,11 +84,13 @@
         </div>
 
         <!-- Page content -->
-        <main :class="getMainContentClass()">
-          <div :class="getContentPaddingClass()">
-            <router-view />
-          </div>
-        </main>
+        <div data-testid="dashboard-content">
+          <main :class="getMainContentClass()" role="main" data-testid="main-content">
+            <div :class="getContentPaddingClass()">
+              <router-view />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
 
@@ -136,6 +150,12 @@ const {
 } = useUIClasses()
 
 const sidebarOpen = ref(false)
+const isSidebarCollapsed = ref(false)
+
+function toggleSidebar() {
+  sidebarOpen.value = !sidebarOpen.value
+  isSidebarCollapsed.value = !isSidebarCollapsed.value
+}
 
 const navigateToProfile = () => {
   router.push('/profile')

@@ -4,7 +4,9 @@
       <h2 :class="getAuthTitleClass()">Sign in to your account</h2>
       <p :class="getAuthSubtitleClass()">
         Or
-        <router-link to="/register" :class="getAuthLinkClass()"> create a new account </router-link>
+        <router-link to="/register" :class="getAuthLinkClass()" data-testid="register-link">
+          create a new account
+        </router-link>
       </p>
     </div>
 
@@ -25,9 +27,14 @@
                 @input="validation.onFieldInput('email')"
                 :disabled="authStore.isLoading"
                 :class="getInputClass(!!validation.fieldErrors.email)"
+                data-testid="email-input"
               />
             </div>
-            <div v-if="validation.fieldErrors.email" :class="getErrorMessageClass()">
+            <div
+              v-if="validation.fieldErrors.email"
+              :class="getErrorMessageClass()"
+              data-testid="email-error"
+            >
               {{ validation.fieldErrors.email }}
             </div>
           </div>
@@ -46,9 +53,14 @@
                 @input="validation.onFieldInput('password')"
                 :disabled="authStore.isLoading"
                 :class="getInputClass(!!validation.fieldErrors.password)"
+                data-testid="password-input"
               />
             </div>
-            <div v-if="validation.fieldErrors.password" :class="getErrorMessageClass()">
+            <div
+              v-if="validation.fieldErrors.password"
+              :class="getErrorMessageClass()"
+              data-testid="password-error"
+            >
               {{ validation.fieldErrors.password }}
             </div>
           </div>
@@ -68,6 +80,7 @@
                   ? 'opacity-50 cursor-not-allowed ' + getPrimaryButtonClass()
                   : getPrimaryButtonClass()
               "
+              data-testid="login-button"
             >
               <span v-if="authStore.isLoading" :class="getInlineSpinnerClass()">
                 <div :class="getSpinnerElementClass()"></div>

@@ -1,8 +1,29 @@
 <template>
   <div>
+    <!-- Skeletons while loading -->
+    <div v-if="loading" :class="getDashboardGridClass()">
+      <div
+        v-for="n in 4"
+        :key="n"
+        :class="[getCardClass(), getDashboardCardPaddingClass()]"
+        data-testid="skeleton-card"
+      >
+        <div class="animate-pulse space-y-4">
+          <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+          <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+        </div>
+      </div>
+    </div>
+
     <div :class="getFlexJustifyBetweenClass()">
-      <h1 :class="getAnalyticsHeaderClass()">Analytics</h1>
-      <button @click="refreshData" :disabled="loading" :class="getActionButtonClass('refresh')">
+      <h1 :class="getAnalyticsHeaderClass()" data-testid="analytics-header">Analytics Dashboard</h1>
+      <button
+        @click="refreshData"
+        :disabled="loading"
+        :class="getActionButtonClass('refresh')"
+        data-testid="refresh-button"
+      >
         <span>Refresh</span>
         <svg
           :class="[getRefreshIconClass(), { 'animate-spin': loading }]"
@@ -47,9 +68,34 @@
           </div>
         </div>
       </div>
+      <!-- Avg Order Value Card -->
+      <div
+        :class="[getCardClass(), getDashboardCardPaddingClass(), 'w-full']"
+        data-testid="avg-order-value-card"
+      >
+        <div :class="getDashboardCardContentClass()">
+          <div :class="getDashboardCardIconContainerClass()">
+            <ClipboardDocumentListIcon :class="getDashboardStatIconClass('emerald')" />
+          </div>
+          <div :class="getDashboardCardTextContainerClass()">
+            <p :class="getDashboardCardTitleClass()">Average Order</p>
+            <p :class="getStatNumberClass('green')">
+              {{
+                formatCurrency(
+                  (dashboard?.revenue?.total || 0) / Math.max(dashboard?.orders?.total || 1, 1),
+                )
+              }}
+            </p>
+            <p :class="getDashboardCardSubtextClass()">Approximate value</p>
+          </div>
+        </div>
+      </div>
 
       <!-- Orders Card -->
-      <div :class="[getCardClass(), getDashboardCardPaddingClass()]">
+      <div
+        :class="[getCardClass(), getDashboardCardPaddingClass(), 'w-full']"
+        data-testid="total-orders-card"
+      >
         <div :class="getDashboardCardContentClass()">
           <div :class="getDashboardCardIconContainerClass()">
             <ClipboardDocumentListIcon :class="getDashboardStatIconClass('blue')" />
@@ -70,7 +116,10 @@
       </div>
 
       <!-- Products Card -->
-      <div :class="[getCardClass(), getDashboardCardPaddingClass()]">
+      <div
+        :class="[getCardClass(), getDashboardCardPaddingClass(), 'w-full']"
+        data-testid="total-products-card"
+      >
         <div :class="getDashboardCardContentClass()">
           <div :class="getDashboardCardIconContainerClass()">
             <ShoppingBagIcon :class="getDashboardStatIconClass('purple')" />
@@ -85,7 +134,10 @@
       </div>
 
       <!-- Users Card -->
-      <div :class="[getCardClass(), getDashboardCardPaddingClass()]">
+      <div
+        :class="[getCardClass(), getDashboardCardPaddingClass(), 'w-full']"
+        data-testid="total-customers-card"
+      >
         <div :class="getDashboardCardContentClass()">
           <div :class="getDashboardCardIconContainerClass()">
             <UsersIcon :class="getDashboardStatIconClass('orange')" />
@@ -104,13 +156,24 @@
           </div>
         </div>
       </div>
+      <!-- Global empty state based on dashboard metrics -->
+    </div>
+    <div
+      v-if="dashboard && isEmptyDashboard"
+      :class="getAnalyticsNoDataClass()"
+      data-testid="no-data-message"
+    >
+      No data available
     </div>
 
     <!-- Order Status Distribution -->
     <div v-if="dashboard" :class="getAnalyticsGridClass()">
-      <div :class="[getCardClass(), getDashboardCardPaddingClass()]">
+      <div
+        :class="[getCardClass(), getDashboardCardPaddingClass()]"
+        data-testid="order-stats-section"
+      >
         <h3 :class="getAnalyticsSectionTitleClass()">Order Status Distribution</h3>
-        <div :class="getAnalyticsStatusListClass()">
+        <div :class="getAnalyticsStatusListClass()" data-testid="order-status-breakdown">
           <div
             v-for="status in dashboard?.orders?.byStatus || []"
             :key="status.status"
@@ -130,9 +193,12 @@
       </div>
 
       <!-- Top Selling Products -->
-      <div :class="[getCardClass(), getDashboardCardPaddingClass()]">
+      <div
+        :class="[getCardClass(), getDashboardCardPaddingClass()]"
+        data-testid="top-products-section"
+      >
         <h3 :class="getAnalyticsSectionTitleClass()">Top Selling Products</h3>
-        <div :class="getTopProductsListClass()">
+        <div :class="getTopProductsListClass()" data-testid="top-products-list">
           <div
             v-for="(product, index) in (dashboard?.products?.topSelling || []).slice(0, 5)"
             :key="product.productId"
@@ -158,11 +224,11 @@
     </div>
 
     <!-- Recent Orders -->
-    <div v-if="dashboard" :class="[getCardClass(), 'mb-8']">
+    <div v-if="dashboard" :class="[getCardClass(), 'mb-8']" data-testid="sales-trends-section">
       <div :class="getDashboardCardPaddingClass()">
         <h3 :class="getAnalyticsSectionTitleClass()">Recent Orders</h3>
         <div :class="getAnalyticsTableContainerClass()">
-          <table :class="getAnalyticsTableClass()">
+          <table :class="getAnalyticsTableClass()" data-testid="orders-chart">
             <thead>
               <tr>
                 <th :class="getAnalyticsTableHeaderCellClass()">Order ID</th>
@@ -201,7 +267,7 @@
     </div>
 
     <!-- Analytics Sections Toggle -->
-    <div :class="getAnalyticsToggleContainerClass()">
+    <div :class="getAnalyticsToggleContainerClass()" data-testid="chart-legend">
       <button
         @click="activeSection = 'sales'"
         :class="[
@@ -249,7 +315,11 @@
     </div>
 
     <!-- Sales Analytics -->
-    <div v-if="activeSection === 'sales'" :class="[getCardClass(), getDashboardCardPaddingClass()]">
+    <div
+      v-if="activeSection === 'sales'"
+      :class="[getCardClass(), getDashboardCardPaddingClass()]"
+      data-testid="sales-chart"
+    >
       <h3 :class="getAnalyticsSectionTitleClass()">Sales Analytics</h3>
       <div v-if="sales?.length > 0" :class="getProductFormSpacingClass()">
         <div :class="getAnalyticsStatsGridClass()">
@@ -268,13 +338,16 @@
           </div>
         </div>
       </div>
-      <div v-else :class="getAnalyticsNoDataClass()">No sales data available</div>
+      <div v-else :class="getAnalyticsNoDataClass()" data-testid="no-data-message">
+        No sales data available
+      </div>
     </div>
 
     <!-- Product Analytics -->
     <div
       v-if="activeSection === 'products'"
       :class="[getCardClass(), getDashboardCardPaddingClass()]"
+      data-testid="top-products-chart"
     >
       <h3 :class="getAnalyticsSectionTitleClass()">Product Analytics</h3>
       <div v-if="products?.length > 0" :class="getAnalyticsTableContainerClass()">
@@ -305,13 +378,16 @@
           </tbody>
         </table>
       </div>
-      <div v-else :class="getAnalyticsNoDataClass()">No product analytics available</div>
+      <div v-else :class="getAnalyticsNoDataClass()" data-testid="no-data-message">
+        No data available
+      </div>
     </div>
 
     <!-- Customer Analytics -->
     <div
       v-if="activeSection === 'customers'"
       :class="[getCardClass(), getDashboardCardPaddingClass()]"
+      data-testid="order-trends-chart"
     >
       <h3 :class="getAnalyticsSectionTitleClass()">Customer Analytics</h3>
       <div v-if="customers" :class="getProductFormSpacingClass()">
@@ -363,13 +439,16 @@
           </div>
         </div>
       </div>
-      <div v-else :class="getAnalyticsNoDataClass()">No customer analytics available</div>
+      <div v-else :class="getAnalyticsNoDataClass()" data-testid="no-data-message">
+        No data available
+      </div>
     </div>
 
     <!-- Inventory Analytics -->
     <div
       v-if="activeSection === 'inventory'"
       :class="[getCardClass(), getDashboardCardPaddingClass()]"
+      data-testid="order-status-chart"
     >
       <h3 :class="getAnalyticsSectionTitleClass()">Inventory Analytics</h3>
       <div v-if="inventory" :class="getProductFormSpacingClass()">
@@ -427,7 +506,9 @@
           </div>
         </div>
       </div>
-      <div v-else :class="getAnalyticsNoDataClass()">No inventory analytics available</div>
+      <div v-else :class="getAnalyticsNoDataClass()" data-testid="no-data-message">
+        No data available
+      </div>
     </div>
   </div>
 </template>
@@ -444,8 +525,10 @@ import {
   ShoppingBagIcon,
   UsersIcon,
 } from '@heroicons/vue/24/outline'
+import { useToast } from 'vue-toastification'
 
 const analyticsStore = useAnalyticsStore()
+const toast = useToast()
 const {
   getCardClass,
   getErrorMessageClass,
@@ -531,10 +614,22 @@ const error = computed(() => analyticsStore.error)
 // * Local state
 const activeSection = ref<'sales' | 'products' | 'customers' | 'inventory'>('sales')
 
+// Consider dashboard with all zeros as empty for global message
+const isEmptyDashboard = computed(() => {
+  const d = dashboard.value
+  if (!d) return false
+  const revenueZero = (d.revenue?.total || 0) === 0
+  const ordersZero = (d.orders?.total || 0) === 0
+  const usersZero = (d.users?.total || 0) === 0
+  const productsZero = (d.products?.total || 0) === 0
+  return revenueZero && ordersZero && usersZero && productsZero
+})
+
 // * Actions
 const refreshData = async () => {
   try {
     await analyticsStore.fetchAllAnalytics()
+    toast.success('Analytics data refreshed')
   } catch (error) {
     console.error('Error refreshing analytics data:', error)
   }

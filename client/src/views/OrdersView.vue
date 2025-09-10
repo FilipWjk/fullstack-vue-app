@@ -3,7 +3,7 @@
     <!-- Page header -->
     <div :class="getPageHeaderClass()">
       <div>
-        <h1 :class="getPageTitleClass()">Orders</h1>
+        <h1 :class="getPageTitleClass()" data-testid="orders-header">Orders Management</h1>
         <p :class="getPageDescriptionClass()">Manage customer orders and track status</p>
       </div>
 
@@ -19,11 +19,17 @@
               type="text"
               placeholder="Search orders..."
               :class="getInputClass()"
+              data-testid="search-input"
             />
           </div>
           <div>
             <label :class="getLabelClass()" class="mb-2">Status</label>
-            <select v-model="filterStatus" @change="handleFilterChange" :class="getSelectClass()">
+            <select
+              v-model="filterStatus"
+              @change="handleFilterChange"
+              :class="getSelectClass()"
+              data-testid="status-filter"
+            >
               <option value="">All Status</option>
               <option value="PENDING">Pending</option>
               <option value="PROCESSING">Processing</option>
@@ -37,6 +43,7 @@
               @click="clearFilters"
               :disabled="!hasActiveFilters"
               :class="getPrimaryButtonClass()"
+              data-testid="date-filter"
             >
               Clear Filters
             </button>
@@ -46,10 +53,14 @@
 
       <!-- Orders Table -->
       <div :class="getOrdersTableContainerClass()">
-        <table :class="getOrdersTableClass()">
+        <table :class="getOrdersTableClass()" data-testid="orders-table">
           <thead :class="getOrdersTableHeaderClass()">
             <tr>
-              <th :class="getOrdersTableHeaderCellClass()" @click="handleSort('orderNumber')">
+              <th
+                :class="getOrdersTableHeaderCellClass()"
+                @click="handleSort('orderNumber')"
+                data-testid="sort-orderNumber"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Order ID
                   <component
@@ -59,7 +70,11 @@
                   />
                 </div>
               </th>
-              <th :class="getOrdersTableHeaderCellClass()" @click="handleSort('customer')">
+              <th
+                :class="getOrdersTableHeaderCellClass()"
+                @click="handleSort('customer')"
+                data-testid="sort-customer"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Customer
                   <component
@@ -69,7 +84,11 @@
                   />
                 </div>
               </th>
-              <th :class="getOrdersTableHeaderCellClass()" @click="handleSort('date')">
+              <th
+                :class="getOrdersTableHeaderCellClass()"
+                @click="handleSort('date')"
+                data-testid="sort-date"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Date
                   <component
@@ -79,7 +98,11 @@
                   />
                 </div>
               </th>
-              <th :class="getOrdersTableHeaderCellClass()" @click="handleSort('status')">
+              <th
+                :class="getOrdersTableHeaderCellClass()"
+                @click="handleSort('status')"
+                data-testid="sort-status"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Status
                   <component
@@ -89,7 +112,11 @@
                   />
                 </div>
               </th>
-              <th :class="getOrdersTableHeaderCellClass()" @click="handleSort('total')">
+              <th
+                :class="getOrdersTableHeaderCellClass()"
+                @click="handleSort('total')"
+                data-testid="sort-total"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Total
                   <component
@@ -99,7 +126,11 @@
                   />
                 </div>
               </th>
-              <th :class="getOrdersTableHeaderCellClass()" @click="handleSort('items')">
+              <th
+                :class="getOrdersTableHeaderCellClass()"
+                @click="handleSort('items')"
+                data-testid="sort-items"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Items
                   <component
@@ -128,6 +159,7 @@
               v-for="order in filteredOrders"
               :key="order.id"
               :class="getOrdersTableRowClass()"
+              data-testid="order-row"
             >
               <td :class="getOrdersTableCellClass()">
                 <div :class="getOrderNumberClass()">#{{ order.orderNumber }}</div>
@@ -143,7 +175,7 @@
                 </div>
               </td>
               <td :class="getOrdersTableCellClass()">
-                <div :class="getOrderDateClass()">
+                <div :class="getOrderDateClass()" data-testid="order-date">
                   {{ formatDate(order.createdAt) }}
                 </div>
               </td>
@@ -151,12 +183,13 @@
                 <span
                   :class="getStatusBadgeClass(order.status)"
                   class="px-2 py-1 text-xs font-medium rounded-full"
+                  data-testid="status-cell"
                 >
                   {{ order.status }}
                 </span>
               </td>
               <td :class="getOrdersTableCellClass()">
-                <div :class="getOrderTotalClass()">
+                <div :class="getOrderTotalClass()" data-testid="order-total">
                   {{ formatCurrency(order.total) }}
                 </div>
               </td>
@@ -165,13 +198,18 @@
               </td>
               <td :class="getOrdersTableActionsClass()">
                 <div :class="getOrdersTableActionsContainerClass()">
-                  <router-link :to="`/orders/${order.id}`" :class="getOrderViewLinkClass()">
+                  <router-link
+                    :to="`/orders/${order.id}`"
+                    :class="getOrderViewLinkClass()"
+                    data-testid="view-order"
+                  >
                     View
                   </router-link>
                   <select
                     v-model="order.status"
                     @change="updateOrderStatus(order)"
                     :class="getOrderStatusSelectClass()"
+                    data-testid="status-select"
                   >
                     <option value="PENDING">Pending</option>
                     <option value="PROCESSING">Processing</option>

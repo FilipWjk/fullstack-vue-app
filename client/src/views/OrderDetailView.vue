@@ -14,14 +14,20 @@
     </div>
 
     <!-- Order Details -->
-    <div v-else-if="order" :class="getOrderDetailMainContainerClass()">
+    <div
+      v-else-if="order"
+      :class="getOrderDetailMainContainerClass()"
+      data-testid="order-management"
+    >
       <!-- Header with Status and Actions -->
       <div :class="getOrderDetailHeaderCardClass()">
         <div :class="getOrderDetailHeaderFlexClass()">
-          <div :class="getOrderDetailHeaderContentClass()">
+          <div :class="getOrderDetailHeaderContentClass()" data-testid="order-management-header">
             <div :class="getOrderDetailHeaderTitleSectionClass()">
               <div>
-                <h1 :class="getOrderDetailHeaderTitleClass()">Order #{{ order.id }}</h1>
+                <h1 :class="getOrderDetailHeaderTitleClass()" data-testid="order-details-header">
+                  Order #{{ order.id }}
+                </h1>
                 <p :class="getOrderDetailHeaderDateClass()">
                   Placed on {{ formatDate(order.createdAt) }}
                 </p>
@@ -32,7 +38,11 @@
             </div>
           </div>
           <div :class="getOrderDetailHeaderActionsClass()">
-            <router-link to="/orders" :class="getOrderDetailBackButtonClass()">
+            <router-link
+              to="/orders"
+              :class="getOrderDetailBackButtonClass()"
+              data-testid="back-to-orders"
+            >
               ← Back to Orders
             </router-link>
           </div>
@@ -44,7 +54,7 @@
         <!-- Customer & Order Info -->
         <div :class="getOrderDetailSidebarClass()">
           <!-- Customer Information -->
-          <div :class="getOrderDetailCardClass()">
+          <div :class="getOrderDetailCardClass()" data-testid="customer-info">
             <h2 :class="getOrderDetailCardHeaderClass()">
               <svg
                 class="w-5 h-5 mr-2 text-emerald-600 dark:text-emerald-400"
@@ -71,8 +81,12 @@
                   </span>
                 </div>
                 <div>
-                  <p :class="getOrderDetailCustomerLabelClass()">{{ order.user.name }}</p>
-                  <p :class="getOrderDetailCustomerValueClass()">{{ order.user.email }}</p>
+                  <p :class="getOrderDetailCustomerLabelClass()" data-testid="customer-name">
+                    {{ order.user.name }}
+                  </p>
+                  <p :class="getOrderDetailCustomerValueClass()" data-testid="customer-email">
+                    {{ order.user.email }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -122,7 +136,7 @@
 
         <!-- Order Items -->
         <div :class="getOrderDetailMainSectionClass()">
-          <div :class="getOrderDetailCardClass()">
+          <div :class="getOrderDetailCardClass()" data-testid="order-items">
             <h2 :class="getOrderDetailCardHeaderClass()">
               <svg
                 class="w-6 h-6 mr-2 text-emerald-600 dark:text-emerald-400"
@@ -145,6 +159,7 @@
                 v-for="(item, index) in order.orderItems"
                 :key="item.id"
                 :class="getOrderDetailItemClass()"
+                data-testid="order-item"
               >
                 <div :class="getOrderDetailItemContentClass()">
                   <div :class="getOrderDetailItemImageClass()">
@@ -171,7 +186,7 @@
                   </div>
 
                   <div class="flex-1 min-w-0">
-                    <h3 :class="getOrderDetailItemNameClass()">
+                    <h3 :class="getOrderDetailItemNameClass()" data-testid="product-name">
                       {{ item.product.name }}
                     </h3>
                     <div :class="getOrderDetailItemDetailsClass()">
@@ -185,7 +200,10 @@
                       </div>
                       <div class="flex items-center space-x-2">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Unit Price:</span>
-                        <span class="text-sm font-medium text-gray-900 dark:text-white">
+                        <span
+                          class="text-sm font-medium text-gray-900 dark:text-white"
+                          data-testid="product-price"
+                        >
                           {{ formatCurrency(item.price) }}
                         </span>
                       </div>
@@ -193,7 +211,10 @@
                   </div>
 
                   <div :class="getOrderDetailItemPriceClass()">
-                    <p class="text-lg font-bold text-gray-900 dark:text-white">
+                    <p
+                      class="text-lg font-bold text-gray-900 dark:text-white"
+                      data-testid="item-total"
+                    >
                       {{ formatCurrency(item.price * item.quantity) }}
                     </p>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Subtotal</p>
@@ -203,7 +224,7 @@
             </div>
 
             <!-- Order Total Footer -->
-            <div :class="getOrderDetailSummaryListClass()">
+            <div :class="getOrderDetailSummaryListClass()" data-testid="order-summary">
               <div :class="getOrderDetailSummaryItemClass()">
                 <div>
                   <p :class="getOrderDetailSummaryLabelClass()">
@@ -212,7 +233,7 @@
                   </p>
                 </div>
                 <div :class="getOrderDetailSummaryTotalClass()">
-                  <p :class="getOrderDetailSummaryTotalValueClass()">
+                  <p :class="getOrderDetailSummaryTotalValueClass()" data-testid="order-total">
                     {{ formatCurrency(order.total) }}
                   </p>
                   <p :class="getOrderDetailSummaryTotalLabelClass()">Grand Total</p>
@@ -227,9 +248,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useOrderStore } from '../stores/orders'
+import { useOrderStore, type Order } from '../stores/orders'
 import { useToast } from 'vue-toastification'
 import { ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import { handleApiError } from '../utils/errorService'

@@ -1,10 +1,11 @@
 <template>
   <div>
     <div :class="getPageHeaderContainerClass()">
-      <h1 :class="getPageTitleClass()">Categories</h1>
+      <h1 :class="getPageTitleClass()" data-testid="categories-header">Categories</h1>
       <button
         @click="openCreateModal"
         :class="getPrimaryButtonClass(false) + ' ' + getPageHeaderActionsClass()"
+        data-testid="add-category-button"
       >
         <svg
           :class="getHeaderButtonIconClass()"
@@ -24,7 +25,7 @@
     </div>
 
     <!-- Error Message -->
-    <div v-if="error" :class="getWarningBadgeClass() + ' mb-4'">
+    <div v-if="error" :class="getWarningBadgeClass() + ' mb-4'" data-testid="categories-error">
       <div :class="getWarningBadgeTextClass()">
         {{ error }}
       </div>
@@ -37,13 +38,22 @@
     </div>
 
     <!-- Categories Grid -->
-    <div v-else-if="categories.length > 0" :class="getCategoryGridClass()">
-      <div v-for="category in categories" :key="category.id" :class="getCategoryCardClass()">
+    <div
+      v-else-if="categories.length > 0"
+      :class="getCategoryGridClass()"
+      data-testid="categories-grid"
+    >
+      <div
+        v-for="category in categories"
+        :key="category.id"
+        :class="getCategoryCardClass()"
+        data-testid="category-card"
+      >
         <!-- Category Image -->
         <div :class="getCategoryImageContainerClass()">
           <img
-            v-if="category.image"
-            :src="getImageUrl(category.image)"
+            v-if="category.imageUrl"
+            :src="getImageUrl(category.imageUrl)"
             :alt="category.name"
             :class="getCategoryImageClass()"
           />
@@ -69,6 +79,7 @@
               @click="openEditModal(category)"
               :class="getCategoryActionButtonClass('primary')"
               title="Edit Category"
+              data-testid="edit-category"
             >
               <svg
                 :class="getCategoryActionIconClass()"
@@ -89,6 +100,7 @@
               @click="openDeleteModal(category)"
               :class="[getCategoryActionButtonClass('danger')]"
               title="Delete Category"
+              data-testid="delete-category"
             >
               <svg
                 :class="getCategoryActionIconClass()"
@@ -109,7 +121,7 @@
 
         <!-- Category Content -->
         <div :class="getCategoryContentClass()">
-          <h3 :class="getCategoryTitleClass()">
+          <h3 :class="getCategoryTitleClass()" data-testid="category-name">
             {{ category.name }}
           </h3>
 
@@ -125,7 +137,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="!loading" :class="getEmptyStateClass()">
+    <div v-else-if="!loading" :class="getEmptyStateClass()" data-testid="empty-categories">
       <svg :class="getEmptyStateIconClass()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
@@ -144,14 +156,26 @@
     </div>
 
     <!-- Create/Edit Modal -->
-    <div v-if="showModal" :class="getCustomModalOverlayClass()" @click.self="closeModal">
-      <div :class="getCardClass() + ' ' + getCustomModalContainerClass()">
+    <div
+      v-if="showModal"
+      :class="getCustomModalOverlayClass()"
+      @click.self="closeModal"
+      data-testid="modal-backdrop"
+    >
+      <div
+        :class="getCardClass() + ' ' + getCustomModalContainerClass()"
+        data-testid="category-modal"
+      >
         <div :class="getCustomModalBodyClass()">
-          <h2 :class="getCustomModalHeaderClass()">
-            {{ isEditing ? 'Edit Category' : 'Create Category' }}
+          <h2 :class="getCustomModalHeaderClass()" data-testid="modal-title">
+            {{ isEditing ? 'Edit Category' : 'Add New Category' }}
           </h2>
 
-          <form @submit.prevent="handleSubmit" :class="getFormSpaceClass()">
+          <form
+            @submit.prevent="handleSubmit"
+            :class="getFormSpaceClass()"
+            data-testid="category-form"
+          >
             <!-- Name -->
             <div>
               <label for="name" :class="getLabelClass()"> Name * </label>
@@ -162,8 +186,11 @@
                 :class="getInputClass(!!formErrors.name)"
                 placeholder="Enter category name"
                 required
+                data-testid="name-input"
               />
-              <p v-if="formErrors.name" :class="getErrorMessageClass()">{{ formErrors.name }}</p>
+              <p v-if="formErrors.name" :class="getErrorMessageClass()" data-testid="name-error">
+                {{ formErrors.name }}
+              </p>
             </div>
 
             <!-- Description -->
@@ -175,6 +202,7 @@
                 rows="3"
                 :class="getInputClass(!!formErrors.description)"
                 placeholder="Enter category description (optional)"
+                data-testid="description-input"
               ></textarea>
               <p v-if="formErrors.description" :class="getErrorMessageClass()">
                 {{ formErrors.description }}
@@ -227,13 +255,19 @@
 
             <!-- Form Buttons -->
             <div :class="getFormButtonContainerClass()">
-              <button type="button" @click="closeModal" :class="getCancelButtonClass()">
+              <button
+                type="button"
+                @click="closeModal"
+                :class="getCancelButtonClass()"
+                data-testid="cancel-button"
+              >
                 Cancel
               </button>
               <button
                 type="submit"
-                :disabled="isSubmitDisabled"
+                :disabled="!!isSubmitDisabled"
                 :class="getSuccessButtonClass() + (isSubmitDisabled ? ' opacity-50' : '')"
+                data-testid="submit-button"
               >
                 {{ loading ? 'Saving...' : isEditing ? 'Update' : 'Create' }}
               </button>
@@ -257,12 +291,13 @@
       :cancelText="(categoryToDelete?._count?.products ?? 0) > 0 ? 'Cancel' : 'Cancel'"
       @confirm="handleDelete"
       @close="closeDeleteModal"
+      data-testid="confirm-dialog"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useCategoriesStore, type Category } from '../stores/categories'
 import { useUIClasses } from '../composables/useUIClasses'
@@ -271,6 +306,7 @@ import { SuccessMessages } from '../utils/successMessages'
 import { getImageUrl } from '../utils/urls'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
 import type { AxiosError } from 'axios'
+import { handleApiError } from '../utils/errorService'
 
 const toast = useToast()
 const categoriesStore = useCategoriesStore()
@@ -320,6 +356,7 @@ const {
   getFormButtonContainerClass,
 } = useUIClasses()
 
+// * Types
 // * Store getters
 const categories = computed(() => categoriesStore.categories)
 const loading = computed(() => categoriesStore.loading)
@@ -401,7 +438,7 @@ const openEditModal = (category: Category) => {
   editingCategory.value = category
   form.value.name = category.name
   form.value.description = category.description || ''
-  imageUrl.value = category.image || ''
+  imageUrl.value = category.imageUrl || ''
   formErrors.value = {}
   showModal.value = true
 }
@@ -424,11 +461,16 @@ const closeDeleteModal = () => {
 const handleSubmit = async () => {
   if (!validateForm()) return
 
+  if (imageUrl.value && !isValidUrl(imageUrl.value)) {
+    formErrors.value.imageUrl = 'Invalid image URL'
+    return
+  }
+
   try {
     const categoryData = {
       name: form.value.name.trim(),
       description: form.value.description?.trim() || undefined,
-      imageUrl: imageUrl.value,
+      imageUrl: imageUrl.value || undefined,
     }
 
     if (isEditing.value && editingCategory.value) {
@@ -463,19 +505,14 @@ const handleSubmit = async () => {
 const handleDelete = async () => {
   if (!categoryToDelete.value) return
 
-  // ? If category has products, just close the modal
-  if ((categoryToDelete.value._count?.products || 0) > 0) {
-    closeDeleteModal()
-    return
-  }
-
   try {
     await categoriesStore.deleteCategory(categoryToDelete.value.id)
     closeDeleteModal()
     toast.success(SuccessMessages.CATEGORY_DELETE_SUCCESS)
   } catch (error) {
     console.error('Error deleting category:', error)
-    toast.error(ErrorMessages.CATEGORY_DELETE_FAILED)
+    const message = handleApiError(error, 'CATEGORY_DELETE_FAILED')
+    toast.error(message)
   }
 }
 

@@ -3,7 +3,11 @@
     <div :class="getCardClass()">
       <h1 :class="[getPageTitleClass(), getProductFormTitleSpacingClass()]">Create Product</h1>
 
-      <form @submit.prevent="handleSubmit" :class="getProductFormSpacingClass()">
+      <form
+        @submit.prevent="handleSubmit"
+        :class="getProductFormSpacingClass()"
+        data-testid="product-form"
+      >
         <!-- Product Name -->
         <div>
           <label for="name" :class="[getLabelClass(), getProductFormLabelClass()]"
@@ -16,6 +20,7 @@
             required
             :class="getInputClass()"
             placeholder="Enter product name"
+            data-testid="name-input"
           />
         </div>
 
@@ -30,6 +35,7 @@
             rows="4"
             :class="getInputClass()"
             placeholder="Enter product description"
+            data-testid="description-input"
           ></textarea>
         </div>
 
@@ -47,6 +53,7 @@
             required
             :class="getInputClass()"
             placeholder="0.00"
+            data-testid="price-input"
           />
         </div>
 
@@ -55,7 +62,13 @@
           <label for="category" :class="[getLabelClass(), getProductFormLabelClass()]"
             >Category</label
           >
-          <select v-model="form.categoryId" id="category" required :class="getSelectClass()">
+          <select
+            v-model="form.categoryId"
+            id="category"
+            required
+            :class="getSelectClass()"
+            data-testid="category-select"
+          >
             <option value="">Select a category</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
@@ -76,6 +89,7 @@
             required
             :class="getInputClass()"
             placeholder="0"
+            data-testid="stock-input"
           />
         </div>
 
@@ -90,6 +104,7 @@
             id="imageUrl"
             :class="getInputClass()"
             placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+            data-testid="image-input"
           />
           <div v-if="form.imageUrl" class="mt-4 flex justify-center">
             <img
@@ -102,11 +117,14 @@
 
         <!-- Form Actions -->
         <div :class="getProductFormButtonContainerClass()">
-          <router-link to="/products" :class="getCancelButtonClass()"> Cancel </router-link>
+          <router-link to="/products" :class="getCancelButtonClass()" data-testid="cancel-button">
+            Cancel
+          </router-link>
           <button
             type="submit"
             :disabled="loading"
             :class="getSuccessButtonClass() + (loading ? ' opacity-50' : '')"
+            data-testid="submit-button"
           >
             <svg
               v-if="loading"

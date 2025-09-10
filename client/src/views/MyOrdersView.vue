@@ -2,7 +2,7 @@
   <div :class="getMyOrdersContainerClass()">
     <div :class="getMyOrdersHeaderContainerClass()">
       <div :class="getMyOrdersHeaderContentClass()">
-        <h1 :class="getMyOrdersHeaderTitleClass()">My Orders</h1>
+        <h1 :class="getMyOrdersHeaderTitleClass()" data-testid="my-orders-header">My Orders</h1>
         <p :class="getMyOrdersHeaderDescriptionClass()">
           A list of all your orders including their status and details.
         </p>
@@ -60,62 +60,78 @@
     </div>
 
     <!-- Orders table -->
-    <div v-else-if="orders.length > 0" :class="getMyOrdersTableContainerClass()">
-      <div :class="getMyOrdersTableWrapperClass()">
-        <div :class="getMyOrdersTableInnerClass()">
-          <div
-            class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 dark:ring-white dark:ring-opacity-10 sm:rounded-lg"
-          >
-            <table :class="getMyOrdersTableClass()">
-              <thead :class="getMyOrdersTableHeaderClass()">
-                <tr>
-                  <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Order ID</th>
-                  <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Date</th>
-                  <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Items</th>
-                  <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Total</th>
-                  <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Status</th>
-                  <th scope="col" :class="getMyOrdersTableHeaderCellRightClass()">
-                    <span class="sr-only">Actions</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody :class="getMyOrdersTableBodyClass()">
-                <tr v-for="order in orders" :key="order.id" :class="getMyOrdersTableRowClass()">
-                  <td :class="getMyOrdersTableCellClass()">#{{ order.orderNumber }}</td>
-                  <td :class="getMyOrdersTableCellClass()">
-                    {{ formatDate(order.createdAt) }}
-                  </td>
-                  <td :class="getMyOrdersTableCellClass()">
-                    <div class="max-w-xs">
-                      <p class="truncate">
-                        {{ order.orderItems.length }} item{{
-                          order.orderItems.length !== 1 ? 's' : ''
-                        }}
-                      </p>
-                      <p class="text-xs text-gray-400 dark:text-gray-500 truncate">
-                        {{ getOrderItemsSummary(order.orderItems) }}
-                      </p>
-                    </div>
-                  </td>
-                  <td :class="getMyOrdersTableCellClass()">
-                    {{ formatCurrency(Number(order.total)) }}
-                  </td>
-                  <td :class="getMyOrdersTableCellClass()">
-                    <span :class="getMyOrdersStatusBadgeClass(order.status)">
-                      {{ order.status }}
-                    </span>
-                  </td>
-                  <td :class="getMyOrdersTableCellRightClass()">
-                    <button
-                      @click="viewOrderDetails(order.id)"
-                      :class="getMyOrdersTableLinkClass()"
-                    >
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+    <div
+      v-else-if="orders.length > 0"
+      :class="getMyOrdersTableContainerClass()"
+      data-testid="orders-list"
+    >
+      <div data-testid="virtual-scroll-container">
+        <div :class="getMyOrdersTableWrapperClass()">
+          <div :class="getMyOrdersTableInnerClass()">
+            <div
+              class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 dark:ring-white dark:ring-opacity-10 sm:rounded-lg"
+            >
+              <table :class="getMyOrdersTableClass()">
+                <thead :class="getMyOrdersTableHeaderClass()">
+                  <tr>
+                    <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Order ID</th>
+                    <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Date</th>
+                    <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Items</th>
+                    <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Total</th>
+                    <th scope="col" :class="getMyOrdersTableHeaderCellClass()">Status</th>
+                    <th scope="col" :class="getMyOrdersTableHeaderCellRightClass()">
+                      <span class="sr-only">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody :class="getMyOrdersTableBodyClass()">
+                  <tr
+                    v-for="order in orders"
+                    :key="order.id"
+                    :class="getMyOrdersTableRowClass()"
+                    data-testid="order-card"
+                  >
+                    <td :class="getMyOrdersTableCellClass()">#{{ order.orderNumber }}</td>
+                    <td :class="getMyOrdersTableCellClass()" data-testid="order-date">
+                      {{ formatDate(order.createdAt) }}
+                    </td>
+                    <td :class="getMyOrdersTableCellClass()">
+                      <div class="max-w-xs">
+                        <p class="truncate">
+                          {{ order.orderItems.length }} item{{
+                            order.orderItems.length !== 1 ? 's' : ''
+                          }}
+                        </p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 truncate">
+                          {{ getOrderItemsSummary(order.orderItems) }}
+                        </p>
+                      </div>
+                    </td>
+                    <td :class="getMyOrdersTableCellClass()" data-testid="order-total">
+                      {{ formatCurrency(Number(order.total)) }}
+                    </td>
+                    <td :class="getMyOrdersTableCellClass()">
+                      <span
+                        :class="getMyOrdersStatusBadgeClass(order.status)"
+                        data-testid="order-status"
+                        class="status-badge"
+                      >
+                        {{ order.status }}
+                      </span>
+                    </td>
+                    <td :class="getMyOrdersTableCellRightClass()">
+                      <button
+                        @click="viewOrderDetails(order.id)"
+                        :class="getMyOrdersTableLinkClass()"
+                        data-testid="view-details"
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

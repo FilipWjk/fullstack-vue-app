@@ -8,7 +8,7 @@ export interface Category {
   id: string
   name: string
   description?: string
-  image?: string
+  imageUrl?: string
   createdAt: string
   updatedAt: string
   _count?: {
@@ -106,7 +106,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     try {
       const response = await axios.get<{ data: Category }>(`/categories/${id}`)
       state.value.currentCategory = response.data.data
-      return response.data
+      return { data: response.data.data }
     } catch (error) {
       setError(handleApiError(error as AxiosError, 'CATEGORY_FETCH_FAILED'))
       throw error
@@ -132,9 +132,8 @@ export const useCategoriesStore = defineStore('categories', () => {
           'Content-Type': 'application/json',
         },
       })
-
       state.value.categories.unshift(response.data.data)
-      return response.data
+      return { data: response.data.data }
     } catch (error) {
       setError(handleApiError(error as AxiosError, 'CATEGORY_CREATE_FAILED'))
       throw error
@@ -171,19 +170,13 @@ export const useCategoriesStore = defineStore('categories', () => {
           'Content-Type': 'application/json',
         },
       })
-
-      // ? Update the category in the list
+      const updated = response.data.data
       const index = state.value.categories.findIndex((cat) => cat.id === id)
-      if (index !== -1) {
-        state.value.categories[index] = response.data.data
-      }
-
-      // ? Update current category if it's the one being updated
+      if (index !== -1) state.value.categories[index] = updated
       if (state.value.currentCategory?.id === id) {
-        state.value.currentCategory = response.data.data
+        state.value.currentCategory = updated
       }
-
-      return response.data
+      return { data: updated }
     } catch (error) {
       setError(handleApiError(error as AxiosError, 'CATEGORY_UPDATE_FAILED'))
       throw error

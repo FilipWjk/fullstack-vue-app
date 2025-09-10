@@ -7,7 +7,22 @@
         <div :class="getSpinnerClass()"></div>
       </div>
 
-      <form v-else @submit.prevent="handleSubmit" :class="getProductFormSpacingClass()">
+      <!-- Not Found State -->
+      <div v-else-if="notFound" class="text-center py-12">
+        <p class="text-lg text-gray-700 dark:text-gray-300" data-testid="not-found-message">
+          Product not found
+        </p>
+        <router-link to="/products" :class="getCancelButtonClass()" data-testid="back-to-products">
+          Back to products
+        </router-link>
+      </div>
+
+      <form
+        v-else
+        @submit.prevent="handleSubmit"
+        :class="getProductFormSpacingClass()"
+        data-testid="product-form"
+      >
         <!-- Product Name -->
         <div>
           <label for="name" :class="getLabelClass()"> Product Name </label>
@@ -18,6 +33,7 @@
             required
             :class="getInputClass()"
             placeholder="Enter product name"
+            data-testid="name-input"
           />
         </div>
 
@@ -30,6 +46,7 @@
             rows="4"
             :class="getInputClass()"
             placeholder="Enter product description"
+            data-testid="description-input"
           ></textarea>
         </div>
 
@@ -45,13 +62,20 @@
             required
             :class="getInputClass()"
             placeholder="0.00"
+            data-testid="price-input"
           />
         </div>
 
         <!-- Category -->
         <div>
           <label for="category" :class="getLabelClass()"> Category </label>
-          <select v-model="form.categoryId" id="category" required :class="getSelectClass()">
+          <select
+            v-model="form.categoryId"
+            id="category"
+            required
+            :class="getSelectClass()"
+            data-testid="category-select"
+          >
             <option value="">Select a category</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
@@ -70,6 +94,7 @@
             required
             :class="getInputClass()"
             placeholder="0"
+            data-testid="stock-input"
           />
         </div>
 
@@ -82,6 +107,7 @@
             id="imageUrl"
             :class="getInputClass()"
             placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+            data-testid="image-input"
           />
           <div v-if="form.imageUrl" class="mt-4 flex justify-center">
             <img
@@ -100,6 +126,7 @@
             type="submit"
             :disabled="loading"
             :class="getSuccessButtonClass() + (loading ? ' opacity-50' : '')"
+            data-testid="submit-button"
           >
             <svg
               v-if="loading"
@@ -164,6 +191,7 @@ const {
 } = useUIClasses()
 
 const loading = ref(false)
+const notFound = ref(false)
 
 const form = ref({
   name: '',
@@ -196,8 +224,7 @@ const loadProduct = async () => {
     const product = response.data
 
     if (!product) {
-      toast.error('Product not found')
-      router.push('/products')
+      notFound.value = true
       return
     }
 
@@ -211,9 +238,14 @@ const loadProduct = async () => {
       imageUrl: product.imageUrl || '',
     }
   } catch (error: unknown) {
-    const errorMessage = handleApiError(error, 'PRODUCT_FETCH_SINGLE_FAILED')
-    toast.error(errorMessage)
-    router.push('/products')
+    // If it's a 404, show not found state; otherwise show error and redirect
+    const message = handleApiError(error, 'PRODUCT_FETCH_SINGLE_FAILED')
+    if (typeof message === 'string' && message.toLowerCase().includes('not found')) {
+      notFound.value = true
+    } else {
+      toast.error(message)
+      router.push('/products')
+    }
   } finally {
     loading.value = false
   }

@@ -6,6 +6,7 @@
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
+      data-testid="confirm-dialog"
     >
       <!-- Background overlay -->
       <div :class="getModalBackdropClass()">
@@ -33,10 +34,20 @@
             </div>
           </div>
           <div :class="getModalActionsClass()">
-            <button type="button" :class="getConfirmButtonClass()" @click="$emit('confirm')">
+            <button
+              type="button"
+              :class="getConfirmButtonClass()"
+              @click="$emit('confirm')"
+              data-testid="confirm-delete"
+            >
               {{ confirmText }}
             </button>
-            <button type="button" :class="getModalCancelButtonClass()" @click="$emit('close')">
+            <button
+              type="button"
+              :class="getModalCancelButtonClass()"
+              @click="$emit('close')"
+              data-testid="cancel-delete"
+            >
               {{ cancelText }}
             </button>
           </div>

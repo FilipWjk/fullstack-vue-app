@@ -4,7 +4,7 @@
       <h2 :class="getAuthTitleClass()">Create your account</h2>
       <p :class="getAuthSubtitleClass()">
         Or
-        <router-link to="/login" :class="getAuthLinkClass()">
+        <router-link to="/login" :class="getAuthLinkClass()" data-testid="login-link">
           sign in to your existing account
         </router-link>
       </p>
@@ -32,9 +32,14 @@
                 :disabled="authStore.isLoading"
                 :class="getInputClass(!!validation.fieldErrors.name)"
                 placeholder="Enter your full name"
+                data-testid="name-input"
               />
             </div>
-            <div v-if="validation.fieldErrors.name" :class="getErrorMessageClass()">
+            <div
+              v-if="validation.fieldErrors.name"
+              :class="getErrorMessageClass()"
+              data-testid="name-error"
+            >
               {{ validation.fieldErrors.name }}
             </div>
           </div>
@@ -54,9 +59,14 @@
                 :disabled="authStore.isLoading"
                 :class="getInputClass(!!validation.fieldErrors.email)"
                 placeholder="Enter your email"
+                data-testid="email-input"
               />
             </div>
-            <div v-if="validation.fieldErrors.email" :class="getErrorMessageClass()">
+            <div
+              v-if="validation.fieldErrors.email"
+              :class="getErrorMessageClass()"
+              data-testid="email-error"
+            >
               {{ validation.fieldErrors.email }}
             </div>
           </div>
@@ -76,9 +86,14 @@
                 :disabled="authStore.isLoading"
                 :class="getInputClass(!!validation.fieldErrors.password)"
                 placeholder="Create a strong password"
+                data-testid="password-input"
               />
             </div>
-            <div v-if="validation.fieldErrors.password" :class="getErrorMessageClass()">
+            <div
+              v-if="validation.fieldErrors.password"
+              :class="getErrorMessageClass()"
+              data-testid="password-error"
+            >
               {{ validation.fieldErrors.password }}
             </div>
             <p :class="getPasswordHintClass()">Must be at least 6 characters long</p>
@@ -99,9 +114,14 @@
                 :disabled="authStore.isLoading"
                 :class="getInputClass(!!validation.fieldErrors.confirmPassword)"
                 placeholder="Confirm your password"
+                data-testid="confirm-password-input"
               />
             </div>
-            <div v-if="validation.fieldErrors.confirmPassword" :class="getErrorMessageClass()">
+            <div
+              v-if="validation.fieldErrors.confirmPassword"
+              :class="getErrorMessageClass()"
+              data-testid="confirm-password-error"
+            >
               {{ validation.fieldErrors.confirmPassword }}
             </div>
           </div>
@@ -138,6 +158,7 @@
                   ? getDisabledButtonClass()
                   : getPrimaryButtonClass()
               "
+              data-testid="register-button"
             >
               <span v-if="authStore.isLoading" :class="getInlineSpinnerClass()">
                 <div :class="getSpinnerElementClass()"></div>

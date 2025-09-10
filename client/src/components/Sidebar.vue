@@ -10,9 +10,9 @@
       <!-- Backdrop -->
       <div :class="getSidebarOverlayClass()" @click="$emit('close')"></div>
 
-      <div :class="getSidebarMobileBackdropClass()">
+      <div :class="getSidebarMobileBackdropClass()" data-testid="mobile-backdrop">
         <!-- Mobile sidebar -->
-        <div :class="getSidebarMobileContentClass()">
+        <div :class="getSidebarMobileContentClass()" data-testid="mobile-menu">
           <!-- Close button -->
           <div :class="getSidebarMobileCloseContainerClass()">
             <button type="button" :class="getSidebarCloseButtonClass()" @click="$emit('close')">
@@ -60,7 +60,11 @@
                       <router-link
                         :to="item.href"
                         @click="$emit('close')"
-                        :class="getNavLinkClass(isActiveRoute(item.href))"
+                        :class="[
+                          getNavLinkClass(isActiveRoute(item.href)),
+                          { active: isActiveRoute(item.href) },
+                        ]"
+                        :data-testid="`nav-${item.name.toLowerCase().replace(/\s+/g, '-')}`"
                       >
                         <component
                           :is="item.icon"
@@ -81,7 +85,11 @@
                       <router-link
                         :to="item.href"
                         @click="$emit('close')"
-                        :class="getNavLinkClass(isActiveRoute(item.href))"
+                        :class="[
+                          getNavLinkClass(isActiveRoute(item.href)),
+                          { active: isActiveRoute(item.href) },
+                        ]"
+                        :data-testid="`nav-${item.name.toLowerCase().replace(/\s+/g, '-')}`"
                       >
                         <component
                           :is="item.icon"
@@ -121,7 +129,14 @@
     </div>
 
     <!-- Desktop sidebar -->
-    <div :class="getSidebarDesktopContainerClass()">
+    <div
+      :class="[
+        getSidebarDesktopContainerClass(),
+        { collapsed: isCollapsed, 'mobile-hidden': !sidebarOpen },
+      ]"
+      data-testid="sidebar"
+      role="navigation"
+    >
       <div :class="getSidebarClass()">
         <!-- Logo/Brand Section -->
         <div :class="getSidebarHeaderClass()">
@@ -145,7 +160,14 @@
             <li>
               <ul role="list" :class="getNavigationSubListClass()">
                 <li v-for="item in navigation" :key="item.name">
-                  <router-link :to="item.href" :class="getNavLinkClass(isActiveRoute(item.href))">
+                  <router-link
+                    :to="item.href"
+                    :class="[
+                      getNavLinkClass(isActiveRoute(item.href)),
+                      { active: isActiveRoute(item.href) },
+                    ]"
+                    :data-testid="`nav-${item.name.toLowerCase().replace(/\s+/g, '-')}`"
+                  >
                     <component
                       :is="item.icon"
                       :class="getNavIconClass(isActiveRoute(item.href))"
@@ -162,7 +184,14 @@
               <div :class="getSidebarSectionTitleClass()">Administration</div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
                 <li v-for="item in adminNavigation" :key="item.name">
-                  <router-link :to="item.href" :class="getNavLinkClass(isActiveRoute(item.href))">
+                  <router-link
+                    :to="item.href"
+                    :class="[
+                      getNavLinkClass(isActiveRoute(item.href)),
+                      { active: isActiveRoute(item.href) },
+                    ]"
+                    :data-testid="`nav-${item.name.toLowerCase().replace(/\s+/g, '-')}`"
+                  >
                     <component
                       :is="item.icon"
                       :class="getNavIconClass(isActiveRoute(item.href))"
@@ -179,7 +208,11 @@
           <div class="mt-4 space-y-4">
             <!-- Profile & Logout Actions -->
             <div class="space-y-1">
-              <router-link to="/profile" :class="getSecondaryButtonClass()">
+              <router-link
+                to="/profile"
+                :class="getSecondaryButtonClass()"
+                data-testid="nav-profile"
+              >
                 <UserIcon class="w-4 h-4 mr-2" />
                 Profile Settings
               </router-link>
@@ -230,6 +263,10 @@ export default defineComponent({
     sidebarOpen: {
       type: Boolean,
       required: true,
+    },
+    isCollapsed: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['close'],

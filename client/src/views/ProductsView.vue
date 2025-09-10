@@ -3,12 +3,13 @@
     <!-- Page header -->
     <div :class="getPageHeaderContainerClass()">
       <div>
-        <h1 :class="getPageTitleClass()">Products</h1>
+        <h1 :class="getPageTitleClass()" data-testid="products-header">Products</h1>
         <p :class="getPageDescriptionClass()">Manage your product inventory</p>
       </div>
       <router-link
         to="/products/create"
         :class="getPrimaryButtonClass(false) + ' ' + getPageHeaderActionsClass()"
+        data-testid="add-product-button"
       >
         <svg
           :class="getHeaderButtonIconClass()"
@@ -39,11 +40,17 @@
             placeholder="Search products..."
             :class="getInputClass()"
             @input="handleFilterChange"
+            data-testid="search-input"
           />
         </div>
         <div>
           <label :class="getLabelClass() + ' ' + getFilterFormFieldClass()">Category</label>
-          <select v-model="filters.category" :class="getSelectClass()" @change="handleFilterChange">
+          <select
+            v-model="filters.category"
+            :class="getSelectClass()"
+            @change="handleFilterChange"
+            data-testid="category-filter"
+          >
             <option value="">All Categories</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.name }}
@@ -72,159 +79,172 @@
 
     <!-- Loading state -->
     <div v-if="productStore.isLoading" :class="getLoadingContainerClass()">
-      <div :class="getSpinnerClass()"></div>
+      <div :class="getSpinnerClass()" data-testid="loading-spinner"></div>
     </div>
 
     <!-- Products table -->
-    <div v-else :class="getTableContainerClass()">
-      <table :class="getTableClass()">
-        <thead :class="getTableHeaderClass()">
-          <tr>
-            <th
-              :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
-              @click="handleSort('name')"
-            >
-              <div :class="getTableHeaderSortContainerClass()">
-                Product
-                <component
-                  :is="getSortIcon('name')"
-                  v-if="getSortIcon('name')"
-                  :class="getSortIconClass()"
-                />
-              </div>
-            </th>
-            <th
-              :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
-              @click="handleSort('categoryId')"
-            >
-              <div :class="getTableHeaderSortContainerClass()">
-                Category
-                <component
-                  :is="getSortIcon('categoryId')"
-                  v-if="getSortIcon('categoryId')"
-                  :class="getSortIconClass()"
-                />
-              </div>
-            </th>
-            <th
-              :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
-              @click="handleSort('price')"
-            >
-              <div :class="getTableHeaderSortContainerClass()">
-                Price
-                <component
-                  :is="getSortIcon('price')"
-                  v-if="getSortIcon('price')"
-                  :class="getSortIconClass()"
-                />
-              </div>
-            </th>
-            <th
-              :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
-              @click="handleSort('stock')"
-            >
-              <div :class="getTableHeaderSortContainerClass()">
-                Stock
-                <component
-                  :is="getSortIcon('stock')"
-                  v-if="getSortIcon('stock')"
-                  :class="getSortIconClass()"
-                />
-              </div>
-            </th>
-            <th
-              :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
-              @click="handleSort('status')"
-            >
-              <div :class="getTableHeaderSortContainerClass()">
-                Status
-                <component
-                  :is="getSortIcon('status')"
-                  v-if="getSortIcon('status')"
-                  :class="getSortIconClass()"
-                />
-              </div>
-            </th>
-            <th :class="getTableActionsHeaderClass()">Actions</th>
-          </tr>
-        </thead>
-        <tbody :class="getTableBodyClass()">
-          <tr v-for="product in products" :key="product.id" :class="getTableRowClass()">
-            <td :class="getTableCellClass()">
-              <div class="flex items-center">
-                <div class="flex-shrink-0 h-12 w-12">
-                  <img
-                    v-if="product.imageUrl"
-                    :src="getImageUrl(product.imageUrl)"
-                    :alt="product.name"
-                    :class="getProductImageClass()"
-                    @error="handleImageError"
+    <div v-else :class="getTableContainerClass()" data-testid="products-section">
+      <h2 class="sr-only">Products list</h2>
+      <div data-testid="table-scroll-container" style="overflow: auto">
+        <table :class="getTableClass() + ' responsive-table'" data-testid="products-table">
+          <thead :class="getTableHeaderClass()">
+            <tr>
+              <th
+                :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
+                @click="handleSort('name')"
+                data-testid="sort-name"
+              >
+                <div :class="getTableHeaderSortContainerClass()">
+                  Product
+                  <component
+                    :is="getSortIcon('name')"
+                    v-if="getSortIcon('name')"
+                    :class="getSortIconClass()"
                   />
-                  <div v-else :class="getProductImagePlaceholderClass()">
-                    <ShoppingBagIcon :class="getIconClass('large', 'gray')" />
+                </div>
+              </th>
+              <th
+                :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
+                @click="handleSort('categoryId')"
+              >
+                <div :class="getTableHeaderSortContainerClass()">
+                  Category
+                  <component
+                    :is="getSortIcon('categoryId')"
+                    v-if="getSortIcon('categoryId')"
+                    :class="getSortIconClass()"
+                  />
+                </div>
+              </th>
+              <th
+                :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
+                @click="handleSort('price')"
+                data-testid="sort-price"
+              >
+                <div :class="getTableHeaderSortContainerClass()">
+                  Price
+                  <component
+                    :is="getSortIcon('price')"
+                    v-if="getSortIcon('price')"
+                    :class="getSortIconClass()"
+                  />
+                </div>
+              </th>
+              <th
+                :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
+                @click="handleSort('stock')"
+                data-testid="sort-stock"
+              >
+                <div :class="getTableHeaderSortContainerClass()">
+                  Stock
+                  <component
+                    :is="getSortIcon('stock')"
+                    v-if="getSortIcon('stock')"
+                    :class="getSortIconClass()"
+                  />
+                </div>
+              </th>
+              <th
+                :class="getTableHeaderCellClass() + ' ' + getTableHeaderSortableClass()"
+                @click="handleSort('status')"
+              >
+                <div :class="getTableHeaderSortContainerClass()">
+                  Status
+                  <component
+                    :is="getSortIcon('status')"
+                    v-if="getSortIcon('status')"
+                    :class="getSortIconClass()"
+                  />
+                </div>
+              </th>
+              <th :class="getTableActionsHeaderClass()">Actions</th>
+            </tr>
+          </thead>
+          <tbody :class="getTableBodyClass()">
+            <tr
+              v-for="product in products"
+              :key="product.id"
+              :class="getTableRowClass()"
+              data-testid="product-row"
+            >
+              <td :class="getTableCellClass()">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-12 w-12">
+                    <img
+                      v-if="product.imageUrl"
+                      :src="getImageUrl(product.imageUrl)"
+                      :alt="product.name"
+                      :class="getProductImageClass()"
+                      @error="handleImageError"
+                    />
+                    <div v-else :class="getProductImagePlaceholderClass()">
+                      <ShoppingBagIcon :class="getIconClass('large', 'gray')" />
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <div :class="getProductNameClass()">{{ product.name }}</div>
+                    <div :class="getProductDescriptionClass()">
+                      {{ truncateText(product.description || 'No description', 50) }}
+                    </div>
                   </div>
                 </div>
-                <div class="ml-4">
-                  <div :class="getProductNameClass()">{{ product.name }}</div>
-                  <div :class="getProductDescriptionClass()">
-                    {{ truncateText(product.description || 'No description', 50) }}
-                  </div>
+              </td>
+              <td :class="getTableCellClass()">
+                <div :class="getTextSmallMutedClass()">
+                  {{ getCategoryName(product.categoryId) }}
                 </div>
-              </div>
-            </td>
-            <td :class="getTableCellClass()">
-              <div :class="getTextSmallMutedClass()">
-                {{ getCategoryName(product.categoryId) }}
-              </div>
-            </td>
-            <td :class="getTableCellClass()">
-              <div :class="getProductPriceClass()">{{ product.price }}€</div>
-            </td>
-            <td :class="getTableCellClass()">
-              <div
-                class="flex items-center justify-center text-sm text-gray-900 dark:text-gray-100"
-              >
-                {{ product.stock }}
-              </div>
-              <div
-                v-if="product.stock === 0"
-                class="flex items-center justify-center text-xs text-red-600 dark:text-red-400 font-medium"
-              >
-                Out of Stock
-              </div>
-              <div
-                v-else-if="product.stock > 0 && product.stock <= 10"
-                class="flex items-center justify-center text-xs text-orange-600 dark:text-orange-400 font-medium"
-              >
-                Low Stock
-              </div>
-            </td>
-            <td :class="getTableCellClass()">
-              <span :class="getStatusBadgeClass(product.status)">
-                {{ getStatusLabel(product.status) }}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <div class="flex justify-end space-x-2">
-                <router-link
-                  :to="`/products/${product.id}/edit`"
-                  :class="getActionButtonClass('primary')"
-                  title="Edit product"
+              </td>
+              <td :class="getTableCellClass()">
+                <div :class="getProductPriceClass()">{{ product.price }}€</div>
+              </td>
+              <td :class="getTableCellClass()">
+                <div
+                  class="flex items-center justify-center text-sm text-gray-900 dark:text-gray-100"
                 >
-                  <PencilIcon class="w-4 h-4" />
-                </router-link>
-                <button
-                  @click="showDeleteDialog(product)"
-                  :class="getActionButtonClass('danger')"
-                  title="Delete product"
+                  {{ product.stock }}
+                </div>
+                <div
+                  v-if="product.stock === 0"
+                  class="flex items-center justify-center text-xs text-red-600 dark:text-red-400 font-medium"
                 >
-                  <TrashIcon class="w-4 h-4" />
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  Out of Stock
+                </div>
+                <div
+                  v-else-if="product.stock > 0 && product.stock <= 10"
+                  class="flex items-center justify-center text-xs text-orange-600 dark:text-orange-400 font-medium"
+                >
+                  Low Stock
+                </div>
+              </td>
+              <td :class="getTableCellClass()">
+                <span :class="getStatusBadgeClass(product.status)">
+                  {{ getStatusLabel(product.status) }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div class="flex justify-end space-x-2">
+                  <router-link
+                    :to="`/products/${product.id}/edit`"
+                    :class="getActionButtonClass('primary')"
+                    title="Edit product"
+                    data-testid="edit-product"
+                  >
+                    <PencilIcon class="w-4 h-4" />
+                  </router-link>
+                  <button
+                    @click="showDeleteDialog(product)"
+                    :class="getActionButtonClass('danger')"
+                    title="Delete product"
+                    data-testid="delete-product"
+                  >
+                    <TrashIcon class="w-4 h-4" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Empty state -->
       <div v-if="products.length === 0" class="text-center py-12">
@@ -242,7 +262,7 @@
     </div>
 
     <!-- Pagination -->
-    <div v-if="products.length > 0" :class="getPaginationContainerClass()">
+    <div v-if="products.length > 0" :class="getPaginationContainerClass()" data-testid="pagination">
       <div class="text-sm text-gray-700 dark:text-gray-300">
         Showing {{ (pagination.page - 1) * pagination.limit + 1 }} to
         {{ Math.min(pagination.page * pagination.limit, pagination.total) }} of

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :class="getUserPageHeaderClass()">
+    <div :class="getUserPageHeaderClass()" data-testid="users-header">
       <div>
         <h1 :class="getUserPageTitleClass()">Users</h1>
         <p :class="getPageDescriptionClass()">Manage user accounts and permissions</p>
@@ -8,6 +8,7 @@
       <button
         @click="openCreateModal"
         :class="getPrimaryButtonClass(false) + ' ' + getUserAddButtonClass()"
+        data-testid="add-user-button"
       >
         <svg :class="getUserAddIconClass()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -35,6 +36,7 @@
             :class="getInputClass()"
             placeholder="Search by name or email..."
             @input="handleSearch"
+            data-testid="search-input"
           />
         </div>
 
@@ -46,6 +48,7 @@
             id="role"
             :class="getSelectClass()"
             @change="handleFilterChange"
+            data-testid="role-filter"
           >
             <option value="">All Roles</option>
             <option value="ADMIN">Admin</option>
@@ -81,10 +84,14 @@
     <!-- Users Table -->
     <div v-else-if="users.length > 0" :class="getCardClass()">
       <div :class="getUserTableContainerClass()">
-        <table :class="getUserTableClass()">
+        <table :class="getUserTableClass()" data-testid="users-table">
           <thead :class="getUserTableHeaderClass()">
             <tr>
-              <th :class="getUserTableHeaderCellClass()" @click="handleSort('name')">
+              <th
+                :class="getUserTableHeaderCellClass()"
+                @click="handleSort('name')"
+                data-testid="sort-name"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   User
                   <component
@@ -94,7 +101,11 @@
                   />
                 </div>
               </th>
-              <th :class="getUserTableHeaderCellClass()" @click="handleSort('role')">
+              <th
+                :class="getUserTableHeaderCellClass()"
+                @click="handleSort('role')"
+                data-testid="sort-role"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Role
                   <component
@@ -104,7 +115,11 @@
                   />
                 </div>
               </th>
-              <th :class="getUserTableHeaderCellClass()" @click="handleSort('orders')">
+              <th
+                :class="getUserTableHeaderCellClass()"
+                @click="handleSort('orders')"
+                data-testid="sort-orders"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Orders
                   <component
@@ -114,7 +129,11 @@
                   />
                 </div>
               </th>
-              <th :class="getUserTableHeaderCellClass()" @click="handleSort('createdAt')">
+              <th
+                :class="getUserTableHeaderCellClass()"
+                @click="handleSort('createdAt')"
+                data-testid="sort-createdAt"
+              >
                 <div :class="getTableHeaderFlexClass()">
                   Created
                   <component
@@ -128,7 +147,12 @@
             </tr>
           </thead>
           <tbody :class="getUserTableBodyClass()">
-            <tr v-for="user in sortedData" :key="user.id" :class="getUserTableRowClass()">
+            <tr
+              v-for="user in sortedData"
+              :key="user.id"
+              :class="getUserTableRowClass()"
+              data-testid="user-row"
+            >
               <td :class="getUserTableCellClass()">
                 <div>
                   <div :class="getUserNameClass()">
@@ -140,7 +164,10 @@
                 </div>
               </td>
               <td :class="getUserTableCellClass()">
-                <span :class="getRoleBadgeClass(user.role) + ' ' + getUserRoleBadgeClass()">
+                <span
+                  :class="getRoleBadgeClass(user.role) + ' ' + getUserRoleBadgeClass()"
+                  data-testid="user-role"
+                >
                   {{ user.role }}
                 </span>
               </td>
@@ -156,6 +183,7 @@
                     @click="openEditModal(user)"
                     :class="getActionButtonClass('primary')"
                     title="Edit user"
+                    data-testid="edit-user"
                   >
                     <PencilIcon class="w-4 h-4" />
                   </button>
@@ -164,6 +192,7 @@
                     :class="getActionButtonClass('danger')"
                     :disabled="(user._count?.orders || 0) > 0"
                     title="Delete user"
+                    data-testid="delete-user"
                   >
                     <TrashIcon class="w-4 h-4" />
                   </button>

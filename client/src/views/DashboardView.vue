@@ -2,7 +2,7 @@
   <div :class="getMainLayoutClass()">
     <!-- Page header -->
     <div class="mb-8">
-      <h1 :class="getPageTitleClass()">Dashboard</h1>
+      <h1 :class="getPageTitleClass()" data-testid="page-title">Dashboard</h1>
     </div>
 
     <!-- Loading state -->

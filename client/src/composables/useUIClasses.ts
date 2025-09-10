@@ -1429,7 +1429,7 @@ export const useUIClasses = () => {
   const getProductFormLabelClass = () => 'mb-2'
 
   const getAnalyticsHeaderClass = () => 'text-3xl font-bold text-gray-900 dark:text-white mb-8'
-  const getDashboardGridClass = () => 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'
+  const getDashboardGridClass = () => 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8'
   const getDashboardCardPaddingClass = () => 'p-6'
   const getDashboardCardContentClass = () => 'flex items-center'
   const getDashboardCardIconContainerClass = () => 'flex-shrink-0'
