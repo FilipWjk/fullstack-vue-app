@@ -4,6 +4,8 @@ A modern, full-stack e-commerce management platform built with Vue.js, Node.js,
 Express, and MySQL. This application provides management tools for products,
 orders, users, categories, and analytics with role-based access control.
 
+> 🖼️ **Want a quick preview?** Check out the [Screenshots section](#-screenshots) below to see the application in action without needing to clone or install anything!
+
 ## 🚀 Features
 
 ### 👤 User Management
@@ -247,25 +249,139 @@ fullstack-vue-app/
 
 ### Authentication
 
-- [Login Page](./screenshots/login/) - User authentication interface
-- [Registration Page](./screenshots/register/) - New user registration
+<details>
+<summary><strong>🔐 Login Page</strong></summary>
+
+![Login Interface](screenshots/login/login_main_interface.png)
+_User authentication interface with email/password form_
+
+</details>
+
+<details>
+<summary><strong>📝 Registration Page</strong></summary>
+
+![Registration Form](screenshots/register/registration_main_form.png)
+_New user registration with form validation_
+
+</details>
 
 ### Dashboard & Analytics
 
-- [Dashboard](./screenshots/dashboard/) - Main dashboard with key metrics
-- [Analytics](./screenshots/analytics/) - Detailed analytics and reports
+<details>
+<summary><strong>📊 Main Dashboard</strong></summary>
+
+![Dashboard Overview](screenshots/dashboard/dashboard_main_overview.png)
+_Primary dashboard view with key metrics and charts_
+
+![Dashboard Secondary View](screenshots/dashboard/dashboard_secondary_metrics.png)
+_Dashboard view showing additional statistics_
+
+</details>
+
+<details>
+<summary><strong>📈 Analytics Dashboard</strong></summary>
+
+![Main Analytics](screenshots/analytics/main_dashboard_overview.png)
+_Main analytics overview with revenue charts_
+
+![Secondary Analytics](screenshots/analytics/secondary_dashboard_view.png)
+_Analytics view with additional metrics_
+
+![Sales Analytics](screenshots/analytics/sales_analytics.png)
+_Sales Analytics_
+
+![Product Analytics](screenshots/analytics/product_analytics.png)
+_Product performance and category breakdown_
+
+![Customer Analytics](screenshots/analytics/customer_analytics.png)
+_Customer Analytics_
+
+![Inventory Analytics](screenshots/analytics/inventory_analytics.png)
+_Inventory levels and stock analytics_
+
+</details>
 
 ### Management Pages
 
-- [Products Management](./screenshots/products/) - Product CRUD operations
-- [Categories Management](./screenshots/categories/) - Category management
-- [Orders Management](./screenshots/orders/) - Order processing and tracking
-- [Users Management](./screenshots/users/) - User administration
+<details>
+<summary><strong>📦 Products Management</strong></summary>
+
+![Products List](screenshots/products/products_screen1.png)
+_Main products listing page with search and filters_
+
+![Second List](screenshots/products/products_screen2.png)
+_Second view of products listing with different sorting/filtering_
+
+![Product Edit Form 1](screenshots/products/edit_product_1.png)
+_Product editing form_
+
+![Product Edit Form 2](screenshots/products/edit_product_2.png)
+_Product editing form_
+
+</details>
+
+<details>
+<summary><strong>🏷️ Categories Management</strong></summary>
+
+![Categories Overview](screenshots/categories/categories.png)
+_Main categories listing page with all product categories_
+
+![Category Edit](screenshots/categories/categories_edit.png)
+_Category editing/creation modal interface_
+
+</details>
+
+<details>
+<summary><strong>📋 Orders Management</strong></summary>
+
+![Orders List](screenshots/orders/orders_screen.png)
+_Main orders listing page with all customer orders and status filters_
+
+![Order Details](screenshots/orders/order_details.png)
+_Detailed view of a specific order with items, customer info, and status_
+
+</details>
+
+<details>
+<summary><strong>👥 Users Management</strong></summary>
+
+![Users List](screenshots/users/users.png)
+_Main users listing page with all registered users and their roles_
+
+![User Edit](screenshots/users/user_edit.png)
+_User editing modal for updating user information and permissions_
+
+</details>
 
 ### User Features
 
-- [Profile Management](./screenshots/profile/) - User profile and settings
-- [My Orders](./screenshots/my-orders/) - Customer order history
+<details>
+<summary><strong>👤 Profile Management</strong></summary>
+
+![Profile Settings](screenshots/profile/profile.png)
+_Main profile page with user information and settings_
+
+![Profile Details](screenshots/profile/profile_2.png)
+ _Different section of profile settings_
+
+![Profile Dropdown](screenshots/profile/profile_dropdown.png)
+_User profile dropdown menu from the navigation header_
+
+</details>
+
+<details>
+<summary><strong>🛒 Customer Orders</strong></summary>
+
+![My Orders List](screenshots/my-orders/my-orders.png)
+_Customer orders listing page showing personal order history_
+
+![Order Detail View 1](screenshots/my-orders/my-orders-detail1.png)
+_Detailed view of a specific order (overview section)_
+
+![Order Detail View 2](screenshots/my-orders/my-orders-detail2.png)
+_Detailed view of a specific order (items section)_
+
+</details>
 
 ## 🧪 Testing
 
